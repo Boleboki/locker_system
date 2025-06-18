@@ -12,12 +12,19 @@ use App\Models\User;
 class AuthController
 {
     private $user, $jwt;
-    public function __construct() {
+    public function __construct()
+    {
         $this->user = new User;
         $this->jwt = new JWT;
     }
 
-    public function login() {
+    public function index()
+    {
+        return view("index.view.php");
+    }
+
+    public function login()
+    {
 
         $rawInput = file_get_contents("php://input");
         $data = json_decode($rawInput, true);
@@ -35,8 +42,8 @@ class AuthController
         }
 
         $user = $this->user->getByUsername($username);
-        
-        if(!$user || !password_verify($password, $user['password'])){
+
+        if (!$user || !password_verify($password, $user['password'])) {
             http_response_code(401);
             Logger::error("Pogresna lozinka ili username");
             echo json_encode(['success' => false, 'error' => "Pogresna lozinka ili username"]);
@@ -56,10 +63,11 @@ class AuthController
             'samesite' => 'Lax'
         ]);
         Logger::info("Korisnik {$username} uspesno ulogovan");
-        echo json_encode([ 'success' => true, 'redirect' => '/dashboard']);
+        echo json_encode(['success' => true, 'redirect' => '/dashboard']);
     }
 
-    public function logout() {
+    public function logout()
+    {
         $token = $_COOKIE['token'];
         setcookie('token', '', [
             'expires' => time() - 3600,
@@ -72,5 +80,4 @@ class AuthController
         Logger::info("Korisnik {$data['username']} uspreno izlogovan");
         echo json_encode(['message' => 'Uspesno izlogovan', 'redirect' => '/']);
     }
-
 }

@@ -35,6 +35,24 @@
     background-color: #dc3545;
     border-color: #dc3545;
   }
+
+  /* Stil za višeslojni dropdown */
+  .dropdown-submenu {
+    position: relative;
+  }
+
+  .dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
+    display: none;
+    position: absolute;
+  }
+
+  .dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+  }
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -49,11 +67,17 @@
       <ul class="navbar-nav me-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-            Korisnici
+            Administracija
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/users">Lista korisnika</a></li>
-            <li><a class="dropdown-item" href="/users/create">Dodaj novog korisnika</a></li>
+            <li class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="/users">Korisnici</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/users">Lista korisnika</a></li>
+                <li><a class="dropdown-item" href="/users/create">Dodaj novog korisnika</a></li>
+              </ul>
+            </li>
+            <li><a class="dropdown-item" href="/konfiguracija">Konfiguracija</a></li>
           </ul>
         </li>
       </ul>

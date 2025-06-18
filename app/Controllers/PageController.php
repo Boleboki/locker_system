@@ -3,16 +3,17 @@
 namespace App\Controllers;
 
 
-class PageController {
-    public function login(){
-        return view("index.view.php");
-    }
+class PageController
+{
 
-    public function dashboard(){
+
+    public function dashboard()
+    {
         view("dashboard.view.php");
     }
 
-    public function test(){
+    public function test()
+    {
         view("test.view.php");
     }
 }
