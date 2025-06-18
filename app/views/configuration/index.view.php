@@ -122,9 +122,8 @@
             <p><strong>Opis:</strong> <span id="modalDescription"></span></p>
         </div>
 
-        <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+        <div style="margin-top: 15px; display: flex; align-items: center; justify-content: center">
             <button id="editBtn" style="background-color: #198754; color: white; padding: 5px 10px;">Izmeni</button>
-            <button id="delBtn" style="background-color: #dc3545; color: white; padding: 5px 10px;">Obriši</button>
         </div>
     </div>
 </div>

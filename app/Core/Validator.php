@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-class Validator {
+class Validator
+{
     private $errors = [];
 
-    public function validateUsername(string $username) {
+    public function validateUsername(string $username)
+    {
         $username = trim($username);
-        if(empty($username)){
+        if (empty($username)) {
             $this->errors[] = "Korisnicko ime ne sme da bude prazno";
             return;
         }
@@ -24,9 +26,10 @@ class Validator {
         return htmlspecialchars($username, ENT_QUOTES, 'UTF-8');
     }
 
-    public function validatePassword(string $password) {
+    public function validatePassword(string $password)
+    {
 
-        if(empty($password)){
+        if (empty($password)) {
             $this->errors[] = "Lozinka ne sme da bude prazna";
             return;
         }
@@ -47,18 +50,22 @@ class Validator {
         return htmlspecialchars($password, ENT_QUOTES, 'UTF-8');
     }
 
-    private function containsXSS($input) {
+    private function containsXSS($input)
+    {
         return $input !== strip_tags($input);
     }
 
-    public function hasErrors() {
+    public function hasErrors()
+    {
         return !empty($this->errors);
     }
 
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
-    public function addError($message) {
+    public function addError($message)
+    {
         $this->errors[] = $message;
     }
 }
