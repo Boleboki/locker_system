@@ -1,0 +1,134 @@
+// Uvoz helper funkcija i klasa za rad sa čitačima
+import { showAlert } from "../helper.js";
+import { CitaciManager } from "./CitaciManager.js";
+import { CitaciUI } from "./CitaciUI.js";
+
+/**
+ * Inicijalizuje sve događaje za rad sa čitačima:
+ * - klikovi na dugmad za izmenu/brisanje
+ * - dvoklik za otvaranje forme
+ * - potvrda brisanja
+ * - dodavanje i izmena čitača
+ */
+export function initializeCitaciEvents() {
+  const citaciTable = document.querySelector("#citaciTableContainer");
+  const citaciAddForm = document.querySelector("#citaciAddForm");
+  const citacModal = document.querySelector("#citacModal");
+  const confirmCitacDeleteModal = document.querySelector("#deleteCitacModal");
+
+  let row = null;
+
+  /**
+   * Klik na dugmad u tabeli: brisanje ili uređivanje
+   */
+  citaciTable?.addEventListener("click", async (e) => {
+    row = e.target.closest("tbody tr");
+    if (!row) return;
+
+    const id = row.dataset.id;
+    if (!id) return;
+    // Brisanje čitača
+    if (e.target.id === "citaci-delete-btn") {
+      try {
+        CitaciUI.showConfirmDeleteModal(id, "#" + id);
+      } catch (error) {
+        showAlert("Greška prilikom brisanja čitača: " + error, "danger");
+        console.error("Error deleting citac:", error);
+      }
+    }
+
+    // Uređivanje čitača
+    if (e.target.id === "citaci-edit-btn") {
+      try {
+        const data = await CitaciManager.getById(id);
+        CitaciUI.showEditModal(data);
+      } catch (error) {
+        showAlert(
+          "Greška prilikom otvaranja modala za izmenu čitača: " + error,
+          "danger"
+        );
+        console.error("Error opening edit modal:", error);
+      }
+    }
+  });
+
+  /**
+   * Potvrda brisanja čitača
+   */
+  confirmCitacDeleteModal?.addEventListener("click", async (e) => {
+    if (e.target.id !== "confirmDeleteBtn") return;
+
+    const id = row.dataset.id;
+    if (!id) return;
+
+    try {
+      const response = await CitaciManager.delete(id);
+      if (response.success) {
+        showAlert("Čitač uspešno obrisan", "success");
+        row.remove();
+        CitaciUI.hideConfirmDeleteModal();
+      } else {
+        showAlert("Greška: " + response.error, "danger");
+      }
+    } catch (error) {
+      showAlert("Greška prilikom brisanja čitača", "danger");
+      console.error("Error deleting citac:", error);
+    }
+  });
+
+  /**
+   * Dvoklik na red u tabeli - otvara modal za izmenu
+   */
+  citaciTable?.addEventListener("dblclick", async (e) => {
+    row = e.target.closest("tbody tr");
+    if (!row) return;
+
+    const data = await CitaciManager.getById(row.dataset.id);
+    CitaciUI.showEditModal(data);
+  });
+
+  /**
+   * Potvrda izmene čitača iz modala
+   */
+  citacModal?.addEventListener("click", async (e) => {
+    if (e.target.id !== "citacEditBtn") return;
+
+    try {
+      const data = CitaciUI.collectFormData();
+
+      const response = await CitaciManager.update(row.dataset.id, data);
+      if (response.success) {
+        showAlert("Čitač uspešno ažuriran", "success");
+        CitaciUI.updateRowValue(row, response.data);
+        CitaciUI.closeEditModal();
+      } else {
+        showAlert("Greška: " + response.error, "danger");
+      }
+    } catch (error) {
+      showAlert("Greška prilikom ažuriranja čitača: " + error, "danger");
+      console.error("Error updating citac:", error);
+    }
+  });
+
+  /**
+   * Dodavanje novog čitača
+   */
+  citaciAddForm?.addEventListener("click", async (e) => {
+    if (e.target.id !== "citacAddBtn") return;
+
+    const data = CitaciUI.collectFormData();
+
+    try {
+      const response = await CitaciManager.add(data);
+      if (response.success) {
+        showAlert("Čitač uspešno dodat", "success");
+        CitaciUI.formReset();
+      } else {
+        showAlert("Greška: " + response.error, "danger");
+      }
+    } catch (error) {
+      showAlert("Greška prilikom dodavanja čitača: " + error, "danger");
+      console.error("Error adding citac:", error);
+    }
+  });
+}

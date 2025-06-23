@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use App\Core\Database;
+use App\Core\Logger;
 
 class Configure extends Database
 {
@@ -32,17 +33,20 @@ class Configure extends Database
             // Priprema SQL upita za čitanje svih redova iz konfiguracione tabele
             $stmt = $this->conn->prepare("SELECT * FROM " . self::CONFIGURATION_TABLE . " ORDER BY name");
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Izvršava pripremljeni upit
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
             // Dobija rezultat
             $result = $stmt->get_result();
             if (!$result) {
+                Logger::error("Failed to get result: " . $stmt->error);
                 throw new \Exception("Failed to get result: " . $stmt->error);
             }
 
@@ -73,16 +77,19 @@ class Configure extends Database
             // Priprema SQL upit za ažuriranje vrednosti
             $stmt = $this->conn->prepare("UPDATE " . self::CONFIGURATION_TABLE . " SET par = ? WHERE name = ?");
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje vrednosti: nova vrednost i ključ
             if (!$stmt->bind_param("ss", $value, $key)) {
+                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             // Izvršava upit
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
@@ -112,15 +119,18 @@ class Configure extends Database
             // Priprema SQL upit za brisanje parametra
             $stmt = $this->conn->prepare("DELETE FROM " . self::CONFIGURATION_TABLE . " WHERE name = ?");
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje ključ (string)
             if (!$stmt->bind_param("s", $key)) {
+                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 

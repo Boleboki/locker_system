@@ -24,3 +24,10 @@ Router::get("/test", "PageController@test")->only(Auth::class);
 Router::get("/konfiguracija", "ConfigurationController@index")->only(Admin::class);
 Router::put("/konfiguracija/{key}", "ConfigurationController@update")->only(Admin::class);
 Router::delete("/konfiguracija/{key}", "ConfigurationController@delete")->only(Admin::class);
+
+Router::get("/citaci", "CitaciController@index")->only(Admin::class);
+Router::get("/citaci/create", "CitaciController@create")->only(Admin::class);
+Router::post("/citaci", "CitaciController@store")->only(Admin::class);
+Router::delete("/citaci/{id}", "CitaciController@delete")->only(Admin::class);
+Router::put('/citaci/{id}', 'CitaciController@update')->only(Admin::class);
+Router::get('/citaci/{id}', 'CitaciController@getById')->only(Admin::class);

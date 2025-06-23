@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Core\JWT;
+use App\Core\JWT as JWTAuth;
 use App\Core\Logger;
 use App\Core\Validator;
 use App\Models\User;
@@ -24,7 +24,7 @@ class AuthController
     public function __construct()
     {
         $this->user = new User;
-        $this->jwt = new JWT;
+        $this->jwt = new JWTAuth;
     }
 
     /**

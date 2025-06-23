@@ -78,6 +78,13 @@
               </ul>
             </li>
             <li><a class="dropdown-item" href="/konfiguracija">Konfiguracija</a></li>
+            <li class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="/citaci">Konfiguracija čitača</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/citaci">Lista čitača</a></li>
+                <li><a class="dropdown-item" href="/citaci/create">Dodaj nov čitač</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
       </ul>

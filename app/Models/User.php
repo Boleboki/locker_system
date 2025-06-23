@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\Database;
+use App\Core\Logger;
 
 class User extends Database
 {
@@ -35,22 +36,26 @@ class User extends Database
             // Priprema SQL upita
             $stmt = $this->conn->prepare("SELECT * FROM " . self::MEMBERS_TABLE . " WHERE member_id = ?");
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje parametar (int)
             if (!$stmt->bind_param("i", $id)) {
+                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             // Izvršava upit
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
             // Dobija rezultat
             $result = $stmt->get_result();
             if (!$result) {
+                Logger::error("Failed to get result: " . $stmt->error);
                 throw new \Exception("Failed to get result: " . $stmt->error);
             }
 
@@ -76,20 +81,24 @@ class User extends Database
         try {
             $stmt = $this->conn->prepare("SELECT * FROM " . self::MEMBERS_TABLE . " WHERE username = ?");
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje string parametar
             if (!$stmt->bind_param("s", $username)) {
+                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
             $result = $stmt->get_result();
             if (!$result) {
+                Logger::error("Failed to get result: " . $stmt->error);
                 throw new \Exception("Failed to get result: " . $stmt->error);
             }
 
@@ -114,15 +123,18 @@ class User extends Database
         try {
             $stmt = $this->conn->prepare("SELECT * FROM " . self::MEMBERS_TABLE);
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
             $result = $stmt->get_result();
             if (!$result) {
+                Logger::error("Failed to get result: " . $stmt->error);
                 throw new \Exception("Failed to get result: " . $stmt->error);
             }
 
@@ -153,20 +165,24 @@ class User extends Database
             // Hashuje lozinku radi bezbednosti
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             if (!$hashedPassword) {
+                Logger::error("Failed to hash password for user: $username");
                 throw new \Exception("Failed to hash password");
             }
 
             $stmt = $this->conn->prepare("INSERT INTO " . self::MEMBERS_TABLE . " (username, password, admin) VALUES (?, ?, ?)");
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje parametre: string, string, int
             if (!$stmt->bind_param("ssi", $username, $hashedPassword, $admin)) {
+                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
@@ -196,14 +212,17 @@ class User extends Database
 
             $stmt = $this->conn->prepare("DELETE FROM " . self::MEMBERS_TABLE . " WHERE member_id = ?");
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             if (!$stmt->bind_param("i", $id)) {
+                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
@@ -236,15 +255,18 @@ class User extends Database
 
             $stmt = $this->conn->prepare("UPDATE " . self::MEMBERS_TABLE . " SET username = ?, password = ?, admin = ? WHERE member_id = ?");
             if (!$stmt) {
+                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje parametre za ažuriranje
             if (!$stmt->bind_param("ssii", $username, $password, $admin, $id)) {
+                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
+                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 

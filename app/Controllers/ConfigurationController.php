@@ -29,7 +29,7 @@ class ConfigurationController
     public function index()
     {
         $config = $this->configModel->getAll(); // Dobavlja sve konfiguracije iz baze
-        view("configuration/index.view.php", ['config' => $config]); // Prosleđuje ih view fajlu za prikaz
+        view("configuration/konfiguracija.view.php", ['config' => $config]); // Prosleđuje ih view fajlu za prikaz
     }
 
     /**
