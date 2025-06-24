@@ -16,8 +16,14 @@ class App
     public function run(): void
     {
         $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-        $method = $_POST["_method"] ?? $_SERVER["REQUEST_METHOD"];
+        $scriptName = dirname($_SERVER['SCRIPT_NAME']);   // npr. /ormarici/public
+        $basePath = str_replace('/public', '', $scriptName); // → /ormarici
 
+        if (strpos($uri, $basePath) === 0) {
+            $uri = substr($uri, strlen($basePath));
+        }
+        $uri = $uri ?: '/';
+        $method = $_POST["_method"] ?? $_SERVER["REQUEST_METHOD"];
         Router::route($uri, $method);
     }
 }

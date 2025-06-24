@@ -19,11 +19,26 @@ class Router
         return new static();
     }
 
-    public static function get(string $uri, string $controller): static    { return static::add("GET", $uri, $controller); }
-    public static function post(string $uri, string $controller): static   { return static::add("POST", $uri, $controller); }
-    public static function delete(string $uri, string $controller): static { return static::add("DELETE", $uri, $controller); }
-    public static function patch(string $uri, string $controller): static  { return static::add("PATCH", $uri, $controller); }
-    public static function put(string $uri, string $controller): static    { return static::add("PUT", $uri, $controller); }
+    public static function get(string $uri, string $controller): static
+    {
+        return static::add("GET", $uri, $controller);
+    }
+    public static function post(string $uri, string $controller): static
+    {
+        return static::add("POST", $uri, $controller);
+    }
+    public static function delete(string $uri, string $controller): static
+    {
+        return static::add("DELETE", $uri, $controller);
+    }
+    public static function patch(string $uri, string $controller): static
+    {
+        return static::add("PATCH", $uri, $controller);
+    }
+    public static function put(string $uri, string $controller): static
+    {
+        return static::add("PUT", $uri, $controller);
+    }
 
     public function only(array|string $middleware): static
     {

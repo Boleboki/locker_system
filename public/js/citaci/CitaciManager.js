@@ -9,6 +9,7 @@
  * - Brisanje čitača
  */
 
+import { url } from "../helper.js";
 export class CitaciManager {
   /**
    * Dohvata podatke o čitaču sa servera na osnovu ID-a.
@@ -18,7 +19,7 @@ export class CitaciManager {
    */
   static async getById(id) {
     try {
-      const response = await fetch(`/citaci/${id}`);
+      const response = await fetch(url(`/citaci/${id}`));
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Server error text:", errorText);
@@ -39,7 +40,7 @@ export class CitaciManager {
    */
   static async add(data) {
     try {
-      const response = await fetch("/citaci", {
+      const response = await fetch(url("/citaci"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +69,7 @@ export class CitaciManager {
    */
   static async update(id, data) {
     try {
-      const response = await fetch(`/citaci/${id}`, {
+      const response = await fetch(url(`/citaci/${id}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +97,7 @@ export class CitaciManager {
    */
   static async delete(id) {
     try {
-      const response = await fetch(`/citaci/${id}`, {
+      const response = await fetch(url(`/citaci/${id}`), {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

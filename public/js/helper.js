@@ -1,6 +1,6 @@
 /*
  * Ova skripta sadrži pomoćne (helper) funkcije za rad sa DOM elementima i prikaz notifikacija.
- * 
+ *
  * Funkcionalnosti:
  * - onClickIfExists: proverava da li element sa datim ID postoji i dodaje mu klik event listener
  * - showAlert: prikazuje Bootstrap alert poruku na stranici i automatski je uklanja nakon 3 sekunde
@@ -14,7 +14,7 @@ export const onClickIfExists = (elementId, callback) => {
   if (element) {
     element.addEventListener("click", callback);
   }
-}
+};
 
 // Prikazuje alert poruku na stranici koristeći Bootstrap stilizovani alert.
 // message - tekst poruke koja će biti prikazana
@@ -37,4 +37,9 @@ export const showAlert = (message, type = "success") => {
       alert.remove();
     }
   }, 3000);
-}
+};
+
+export const url = (path) => {
+  // Vraća URL koji se koristi za API pozive, kombinujući osnovni URL sa prosleđenim putem
+  return `${BASE_URL}${path}`;
+};

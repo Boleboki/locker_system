@@ -57,7 +57,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="/">Admin Panel</a>
+    <a class="navbar-brand" href="<?= url('/') ?>">Admin Panel</a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
       <span class="navbar-toggler-icon"></span>
@@ -71,18 +71,18 @@
           </a>
           <ul class="dropdown-menu">
             <li class="dropdown-submenu">
-              <a class="dropdown-item dropdown-toggle" href="/users">Korisnici</a>
+              <a class="dropdown-item dropdown-toggle" href="<?= url('/users') ?>">Korisnici</a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/users">Lista korisnika</a></li>
-                <li><a class="dropdown-item" href="/users/create">Dodaj novog korisnika</a></li>
+                <li><a class="dropdown-item" href="<?= url('/users') ?>">Lista korisnika</a></li>
+                <li><a class="dropdown-item" href="<?= url('/users/create') ?>">Dodaj novog korisnika</a></li>
               </ul>
             </li>
-            <li><a class="dropdown-item" href="/konfiguracija">Konfiguracija</a></li>
+            <li><a class="dropdown-item" href="<?= url('/konfiguracija') ?>">Konfiguracija</a></li>
             <li class="dropdown-submenu">
-              <a class="dropdown-item dropdown-toggle" href="/citaci">Konfiguracija čitača</a>
+              <a class="dropdown-item dropdown-toggle" href="<?= url('/citaci') ?>">Konfiguracija čitača</a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/citaci">Lista čitača</a></li>
-                <li><a class="dropdown-item" href="/citaci/create">Dodaj nov čitač</a></li>
+                <li><a class="dropdown-item" href="<?= url('/citaci') ?>">Lista čitača</a></li>
+                <li><a class="dropdown-item" href="<?= url('/citaci/create') ?>">Dodaj novi čitač</a></li>
               </ul>
             </li>
           </ul>

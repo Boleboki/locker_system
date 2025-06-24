@@ -4,8 +4,10 @@ namespace App\Middleware;
 
 use App\Core\JWT;
 
-class Admin {
-    public function handle(): void {
+class Admin
+{
+    public function handle(): void
+    {
         if (!isset($_COOKIE['token'])) {
             $this->deny("/");
         }
@@ -18,9 +20,11 @@ class Admin {
             $this->deny("/test");
     }
 
-    private function deny(string $redirectTo): void {
+    private function deny(string $redirectTo): void
+    {
         http_response_code(403);
-        header("Location: $redirectTo");
+        $redirectTo = url($redirectTo);
+        header("Location: {$redirectTo}");
         exit;
     }
 }

@@ -1,4 +1,4 @@
-<?php require base_path("app/views/inc/header.php")?>
+<?php require base_path("app/views/inc/header.php") ?>
 <?php require base_path("app/views/inc/nav.php") ?>
 
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
@@ -46,9 +46,9 @@
                   <?= $user['admin'] ? '<span class="badge bg-success">Da</span>' : '<span class="badge bg-secondary">Ne</span>' ?>
                 </td>
                 <td>
-                  <a href="/users/<?= $user['member_id'] ?>/edit" class="btn btn-sm btn-outline-warning">Izmeni</a>
-                  <button data-id="<?= htmlspecialchars($user['member_id']) ?>" data-username="<?= htmlspecialchars($user["username"])?>"
-                   class="btn btn-sm btn-outline-danger delete-btn">Obriši</button>
+                  <a href="<?= url('/users/' . $user['member_id'] . '/edit') ?>" class="btn btn-sm btn-outline-warning">Izmeni</a>
+                  <button data-id="<?= htmlspecialchars($user['member_id']) ?>" data-username="<?= htmlspecialchars($user["username"]) ?>"
+                    class="btn btn-sm btn-outline-danger delete-btn">Obriši</button>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -64,4 +64,4 @@
 </div>
 
 
-<?php require base_path("app/views/inc/footer.php")?>
+<?php require base_path("app/views/inc/footer.php") ?>

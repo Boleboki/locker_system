@@ -1,34 +1,41 @@
 /*
  * Ova skripta pruža osnovnu funkcionalnost za autentifikaciju korisnika
- * preko frontend-a. 
- * 
+ * preko frontend-a.
+ *
  * Glavne funkcionalnosti:
  * - Prijavljivanje korisnika slanjem korisničkog imena i lozinke na backend
  * - Odjavljivanje korisnika slanjem zahteva za logout na backend
  * - Upravljanje klik događajima na dugmad za login i logout, sa prikazom
  *   odgovarajućih poruka o greškama ili preusmeravanjem korisnika nakon uspeha
- * 
- * Skripta koristi async/await za asinkrone pozive API-ja i funkcije iz "helper.js" 
+ *
+ * Skripta koristi async/await za asinkrone pozive API-ja i funkcije iz "helper.js"
  * za pomoćne UI funkcije poput prikaza upozorenja i registracije klikova.
  */
 
-import { showAlert, onClickIfExists } from "./helper.js";
+import { showAlert, onClickIfExists, url } from "./helper.js";
+
+console.log("Auth.js loaded");
 
 class Auth {
   /**
    * Funkcija za prijavu korisnika slanjem POST zahteva
-   * @param {string} username - korisničko ime 
+   * @param {string} username - korisničko ime
    * @param {string} password - lozinka
    * @returns {Promise<object>} odgovor sa servera u JSON formatu
    */
-  
+
   static async login(username, password) {
     try {
-      const response = await fetch("/login", {
+      const response = await fetch(url("/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server error text:", errorText);
+        throw new Error("Server error text: " + errorText);
+      }
       return await response.json();
     } catch (err) {
       showAlert("Greška u komunikaciji sa serverom", "danger");
@@ -39,7 +46,7 @@ class Auth {
    * @returns {Promise<object>} odgovor sa servera u JSON formatu
    */
   static async logout() {
-    const response = await fetch("/logout", {
+    const response = await fetch(url("/logout"), {
       method: "DELETE",
     });
     return await response.json();
@@ -50,8 +57,8 @@ class Auth {
 // Učitava vrednosti input polja za korisničko ime i lozinku,
 // poziva Auth.login
 onClickIfExists("loginBtn", async () => {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
 
   try {
     const data = await Auth.login(username, password);
@@ -69,7 +76,6 @@ onClickIfExists("loginBtn", async () => {
     showAlert("Greška u komunikaciji sa serverom", "danger");
   }
 });
-
 
 // Registracija klik handlera za dugme za logout
 // Poziva Auth.logout

@@ -10,7 +10,7 @@
  * a korisnički interfejs se osvežava i kontroliše kroz event listenere i modale.
  */
 
-import { onClickIfExists, showAlert } from "./helper.js";
+import { onClickIfExists, showAlert, url } from "./helper.js";
 
 // Klasa koja enkapsulira metode za upravljanje korisnicima preko API-ja
 class UserManager {
@@ -22,7 +22,7 @@ class UserManager {
    * @returns {Promise<object>} odgovor sa servera u JSON formatu
    */
   static async add(username, password, isAdmin) {
-    const response = await fetch("/users", {
+    const response = await fetch(url("/users"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password, isAdmin }),
@@ -39,7 +39,7 @@ class UserManager {
    * @returns {Promise<object>} odgovor sa servera u JSON formatu
    */
   static async edit(userId, username, password, isAdmin) {
-    const response = await fetch(`/users/${userId}`, {
+    const response = await fetch(url(`/users/${userId}`), {
       // dodata ispravna sintaksa za template literal
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -54,7 +54,7 @@ class UserManager {
    * @returns {Promise<object>} odgovor sa servera u JSON formatu
    */
   static async delete(userId) {
-    const response = await fetch(`/users/${userId}`, {
+    const response = await fetch(url(`/users/${userId}`), {
       // dodata ispravna sintaksa za template literal
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -75,6 +75,7 @@ onClickIfExists("addUserBtn", async () => {
     const data = await UserManager.add(username, password, isAdmin);
     showAlert(data.message || data.error, data.success ? "success" : "danger");
   } catch (e) {
+    console.error("Greška prilikom dodavanja korisnika:", e);
     showAlert("Greška u dodavanju korisnika", "danger");
   }
 });

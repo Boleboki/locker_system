@@ -4,8 +4,10 @@ namespace App\Middleware;
 
 use App\Core\JWT;
 
-class Auth {
-    public function handle(): void {
+class Auth
+{
+    public function handle(): void
+    {
         if (!isset($_COOKIE['token'])) {
             $this->redirectToLogin();
         }
@@ -18,9 +20,11 @@ class Auth {
         }
     }
 
-    private function redirectToLogin(): void {
+    private function redirectToLogin(): void
+    {
         http_response_code(401);
-        header("Location: /login");
+        $url = url('/login');
+        header("Location: {$url}");
         exit;
     }
 }

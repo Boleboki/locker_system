@@ -93,7 +93,7 @@ class AuthController
         Logger::info("Korisnik {$username} uspesno ulogovan");
 
         // Uspešan JSON odgovor sa redirekcijom
-        echo json_encode(['success' => true, 'redirect' => '/dashboard']);
+        echo json_encode(['success' => true, 'redirect' => url('/dashboard')]);
     }
 
     /**
@@ -120,6 +120,6 @@ class AuthController
 
         Logger::info("Korisnik {$data['username']} uspreno izlogovan");
 
-        echo json_encode(['message' => 'Uspesno izlogovan', 'redirect' => '/']);
+        echo json_encode(['message' => 'Uspesno izlogovan', 'redirect' => url('/')]);
     }
 }

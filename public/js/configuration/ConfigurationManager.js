@@ -3,6 +3,8 @@
  * u vezi sa ažuriranjem i brisanjem konfiguracionih stavki.
  * Metode koriste async/await i fetch API za HTTP zahteve.
  */
+
+import { url } from "../helper.js";
 export class ConfigurationManager {
   /**
    * Ažurira vrednost konfiguracione stavke na serveru.
@@ -15,7 +17,7 @@ export class ConfigurationManager {
   static async update(key, value) {
     try {
       // Slanje PUT zahteva na endpoint sa ključem konfiguracije
-      const response = await fetch(`/konfiguracija/${key}`, {
+      const response = await fetch(url(`/konfiguracija/${key}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json", // JSON telo zahteva
@@ -47,7 +49,7 @@ export class ConfigurationManager {
   static async delete(key) {
     try {
       // Slanje DELETE zahteva na endpoint sa ključem konfiguracije
-      const response = await fetch(`/konfiguracija/${key}`, {
+      const response = await fetch(url(`/konfiguracija/${key}`), {
         method: "DELETE",
       });
 

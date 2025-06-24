@@ -1,4 +1,4 @@
-<?php require "inc/header.php"?>
+<?php require "inc/header.php" ?>
 <?php require "inc/nav.php" ?>
 
 
@@ -10,4 +10,4 @@
 </div>
 
 
-<?php require "inc/footer.php"?>
+<?php require "inc/footer.php" ?>
