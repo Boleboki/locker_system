@@ -1,4 +1,11 @@
-// Uvoz helper funkcija i klasa za rad sa čitačima
+// ====================================================================
+// OVAJ FAJL:
+// Postavlja sve događaje vezane za upravljanje čitačima:
+// dodavanje, izmena, brisanje i prikazivanje modala.
+// Koristi CitaciManager za komunikaciju sa backend-om,
+// i CitaciUI za prikazivanje/skrivanje UI komponenti.
+// ====================================================================
+
 import { showAlert } from "../helper.js";
 import { CitaciManager } from "./CitaciManager.js";
 import { CitaciUI } from "./CitaciUI.js";
@@ -27,9 +34,11 @@ export function initializeCitaciEvents() {
 
     const id = row.dataset.id;
     if (!id) return;
-    // Brisanje čitača
+
+    // Ako je kliknuto na dugme za brisanje čitača
     if (e.target.id === "citaci-delete-btn") {
       try {
+        // Prikaz modala za potvrdu brisanja
         CitaciUI.showConfirmDeleteModal(id, "#" + id);
       } catch (error) {
         showAlert("Greška prilikom brisanja čitača: " + error, "danger");
@@ -37,10 +46,12 @@ export function initializeCitaciEvents() {
       }
     }
 
-    // Uređivanje čitača
+    // Ako je kliknuto na dugme za izmenu čitača
     if (e.target.id === "citaci-edit-btn") {
       try {
+        // Uzimanje podataka čitača sa servera
         const data = await CitaciManager.getById(id);
+        // Otvaranje modala sa podacima za izmenu
         CitaciUI.showEditModal(data);
       } catch (error) {
         showAlert(
@@ -62,8 +73,10 @@ export function initializeCitaciEvents() {
     if (!id) return;
 
     try {
+      // Slanje zahteva za brisanje čitača
       const response = await CitaciManager.delete(id);
       if (response.success) {
+        // Uspešno brisanje sa UI-ja i poruka korisniku
         showAlert("Čitač uspešno obrisan", "success");
         row.remove();
         CitaciUI.hideConfirmDeleteModal();
@@ -83,6 +96,7 @@ export function initializeCitaciEvents() {
     row = e.target.closest("tbody tr");
     if (!row) return;
 
+    // Dobavljanje podataka čitača i otvaranje forme za izmenu
     const data = await CitaciManager.getById(row.dataset.id);
     CitaciUI.showEditModal(data);
   });
@@ -94,11 +108,14 @@ export function initializeCitaciEvents() {
     if (e.target.id !== "citacEditBtn") return;
 
     try {
+      // Sakupljanje podataka iz forme
       const data = CitaciUI.collectFormData();
 
+      // Slanje zahteva za ažuriranje čitača
       const response = await CitaciManager.update(row.dataset.id, data);
       if (response.success) {
         showAlert("Čitač uspešno ažuriran", "success");
+        // Ažuriranje prikaza u tabeli
         CitaciUI.updateRowValue(row, response.data);
         CitaciUI.closeEditModal();
       } else {
@@ -116,9 +133,11 @@ export function initializeCitaciEvents() {
   citaciAddForm?.addEventListener("click", async (e) => {
     if (e.target.id !== "citacAddBtn") return;
 
+    // Sakupljanje podataka iz forme
     const data = CitaciUI.collectFormData();
 
     try {
+      // Slanje zahteva za dodavanje novog čitača
       const response = await CitaciManager.add(data);
       if (response.success) {
         showAlert("Čitač uspešno dodat", "success");

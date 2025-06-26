@@ -80,7 +80,7 @@
 <div id="alertBox" class="mt-3"></div>
 <div class="d-flex justify-content-center align-items-start">
     <div class="mt-2" style="max-width: 80%; width: 100%;">
-        <h2 class="text-center">Konfiguraciona tabela</h2>
+        <h2 class="text-center">Podešavanja programa</h2>
         <div style="max-height: 70vh; overflow-y: auto; overflow-x: hidden; width: 100%;" class="mt-3" id="configTableContainer">
             <table class="table table-bordered table-striped w-100 table-hover" style="table-layout: fixed; word-wrap: break-word;">
                 <thead class="table-dark">

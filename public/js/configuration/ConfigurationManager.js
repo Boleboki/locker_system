@@ -17,7 +17,7 @@ export class ConfigurationManager {
   static async update(key, value) {
     try {
       // Slanje PUT zahteva na endpoint sa ključem konfiguracije
-      const response = await fetch(url(`/konfiguracija/${key}`), {
+      const response = await fetch(url(`/podesavanja/${key}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json", // JSON telo zahteva
@@ -27,7 +27,9 @@ export class ConfigurationManager {
 
       // Provera da li je odgovor uspešan (status 200-299)
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorText = await response.text();
+        console.error("Server error text:", errorText);
+        throw new Error("Server error text: " + errorText);
       }
 
       // Parsiranje i vraćanje JSON odgovora
@@ -49,13 +51,15 @@ export class ConfigurationManager {
   static async delete(key) {
     try {
       // Slanje DELETE zahteva na endpoint sa ključem konfiguracije
-      const response = await fetch(url(`/konfiguracija/${key}`), {
+      const response = await fetch(url(`/podesavanja/${key}`), {
         method: "DELETE",
       });
 
       // Provera da li je odgovor uspešan
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorText = await response.text();
+        console.error("Server error text:", errorText);
+        throw new Error("Server error text: " + errorText);
       }
 
       // Parsiranje i vraćanje JSON odgovora

@@ -1,3 +1,7 @@
+<?php
+
+use App\Models\User; ?>
+
 <style>
   .nav-link {
     position: relative;
@@ -53,11 +57,20 @@
   .dropdown-submenu:hover>.dropdown-menu {
     display: block;
   }
+
+  .version {
+    text-align: right;
+    font-size: 0.6rem;
+    margin: 0;
+    ;
+  }
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="<?= url('/') ?>">Admin Panel</a>
+    <a class="navbar-brand" href="<?= url('/') ?>">Ormarići <br>
+      <p class="version"></p>
+    </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
       <span class="navbar-toggler-icon"></span>
@@ -65,30 +78,48 @@
 
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-            Administracija
-          </a>
-          <ul class="dropdown-menu">
-            <li class="dropdown-submenu">
-              <a class="dropdown-item dropdown-toggle" href="<?= url('/users') ?>">Korisnici</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="<?= url('/users') ?>">Lista korisnika</a></li>
-                <li><a class="dropdown-item" href="<?= url('/users/create') ?>">Dodaj novog korisnika</a></li>
-              </ul>
-            </li>
-            <li><a class="dropdown-item" href="<?= url('/konfiguracija') ?>">Konfiguracija</a></li>
-            <li class="dropdown-submenu">
-              <a class="dropdown-item dropdown-toggle" href="<?= url('/citaci') ?>">Konfiguracija čitača</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="<?= url('/citaci') ?>">Lista čitača</a></li>
-                <li><a class="dropdown-item" href="<?= url('/citaci/create') ?>">Dodaj novi čitač</a></li>
-              </ul>
-            </li>
-          </ul>
-        </li>
+        <?php if ((new User)->isAdmin()): ?>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              Administracija
+            </a>
+            <ul class="dropdown-menu">
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="<?= url('/users') ?>">Korisnici</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="<?= url('/users') ?>">Lista korisnika</a></li>
+                  <li><a class="dropdown-item" href="<?= url('/users/create') ?>">Dodaj novog korisnika</a></li>
+                </ul>
+              </li>
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="<?= url('/podesavanja') ?>">Podešavanja</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="<?= url('/podesavanja') ?>">Podešavanja programa</a></li>
+                  <li class="dropdown-submenu">
+                    <a class="dropdown-item dropdown-toggle" href="<?= url('/citaci') ?>">Podešavanja čitača</a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="<?= url('/citaci') ?>">Lista čitača</a></li>
+                      <li><a class="dropdown-item" href="<?= url('/citaci/create') ?>">Dodaj novi čitač</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+
+
+            </ul>
+          </li>
+        <?php endif; ?>
+
       </ul>
       <button class="btn btn-outline-light" type="button" id="logoutBtn">Logout</button>
     </div>
   </div>
 </nav>
+
+<script>
+  fetch("<?= BASE_URL ?>/version.json")
+    .then(res => res.json())
+    .then(data => {
+      document.querySelector(".navbar-brand p").textContent = data.version;
+    });
+</script>

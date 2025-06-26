@@ -29,11 +29,14 @@ class UserController
      */
     public function index()
     {
-        $users = $this->user->getAll();
-
-        return view("users/index.view.php", [
-            "users" => $users
-        ]);
+        try {
+            return view("users/index.view.php", [
+                "users" => $this->user->getAll()
+            ]);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
     }
 
     /**
@@ -42,7 +45,12 @@ class UserController
      */
     public function create()
     {
-        return view("users/create.view.php");
+        try {
+            return view("users/create.view.php");
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
     }
 
     /**
@@ -59,13 +67,12 @@ class UserController
 
             $username = $validator->validateUsername($data['username'] ?? '');
             $password = $validator->validatePassword($data['password'] ?? '');
-            $isAdmin = isset($data['isAdmin']) ? (int)$data['isAdmin'] : 0;
 
             if ($validator->hasErrors()) {
                 // Vraća greške kao JSON odgovor
                 echo json_encode([
                     'success' => false,
-                    'error' => implode("\n", $validator->getErrors())
+                    'error' => $validator->getErrors()
                 ]);
                 return;
             }
@@ -79,9 +86,14 @@ class UserController
                 ]);
                 return;
             }
-
+            $data = [
+                'username' => $username,
+                'password' => $password,
+                'admin' => $data['admin'],
+                'aktivan' => $data['aktivan']
+            ];
             // Dodavanje korisnika u bazu
-            if (!$this->user->add($username, $password, $isAdmin)) {
+            if (!$this->user->add($data)) {
                 Logger::error("Greška prilikom dodavanja korisnika: {$username}");
                 echo json_encode([
                     "success" => false,
@@ -95,7 +107,7 @@ class UserController
                 "success" => true,
                 "message" => "Korisnik uspešno dodat"
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Server error
             http_response_code(500);
             echo json_encode([
@@ -187,7 +199,7 @@ class UserController
         try {
             $input = json_decode(file_get_contents("php://input"), true);
 
-            if (!$input || !isset($input["username"], $input["isAdmin"])) {
+            if (!$input || !isset($input["username"], $input["admin"])) {
                 echo json_encode([
                     'success' => false,
                     'error' => 'Neispravan unos podataka.'
@@ -197,14 +209,12 @@ class UserController
 
             $validator = new Validator();
 
-            $username = $validator->validateUsername($input['username'] ?? '');
+            $username = $validator->validateUsername($input['username']) ?? '';
             $password = $input['password'] ?? '';
 
             if (!empty($password)) {
-                $password = $validator->validatePassword($password);
+                $password = $validator->validatePassword($password) ?? '';
             }
-
-            $isAdmin = (int)$input["isAdmin"];
 
             $currentUser = $this->user->getById($id);
             $existingUser = $this->user->getByUsername($username);
@@ -217,15 +227,20 @@ class UserController
             if ($validator->hasErrors()) {
                 echo json_encode([
                     'success' => false,
-                    'error' => implode("<br>", $validator->getErrors())
+                    'error' => $validator->getErrors()
                 ]);
                 return;
             }
 
             // Ako nova lozinka nije prosleđena, koristi postojeću iz baze
             $passwordHash = !empty($password) ? password_hash($password, PASSWORD_DEFAULT) : $currentUser["password"];
-
-            $result = $this->user->edit($id, $username, $passwordHash, $isAdmin);
+            $data = [
+                'username' => $username,
+                'password' => $passwordHash,
+                'admin'  => $input["admin"],
+                'aktivan' => $input["aktivan"]
+            ];
+            $result = $this->user->edit($id, $data);
 
             if ($result) {
                 Logger::info("Korisnik {$username} uspešno izmenjen");

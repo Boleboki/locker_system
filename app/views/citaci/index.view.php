@@ -75,7 +75,7 @@
 <div id="alertBox" class="mt-3"></div>
 <div class="d-flex justify-content-center align-items-start">
     <div class="mt-2" style="max-width: 95%; width: 100%;">
-        <h2 class="text-center">Konfiguracija čitača</h2>
+        <h2 class="text-center">Podešavanja čitača</h2>
         <div style="max-height: 75vh; overflow-y: auto; overflow-x: auto; width: 100%;" class="mt-3" id="citaciTableContainer">
             <table class="table table-bordered table-striped w-100 table-hover" style="table-layout: fixed; word-wrap: break-word;">
                 <thead class="table-dark text-center align-middle">

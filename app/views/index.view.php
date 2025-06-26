@@ -2,7 +2,7 @@
 
 <div id="alertBox" class="mt-3"></div>
 <div class="container vh-100 d-flex justify-content-center align-items-center">
-  <div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
+  <div class="card p-4 shadow" style="max-width: 400px; width: 100%;" id="loginForm">
     <h2 class="text-center mb-4">Login</h2>
 
     <div class="mb-3">
@@ -16,8 +16,10 @@
     </div>
 
     <button type="button" class="btn btn-primary w-100" id="loginBtn">Login</button>
+    <div class="form-text text-danger error-message" style="display: none;">
+      <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+    </div>
 
-    <div id="message" class="mt-3"></div>
   </div>
 </div>
 <?php require "inc/footer.php" ?>

@@ -22,7 +22,7 @@
 
 <div id="alertBox" class="mt-3"></div>
 <div class="container mt-5">
-  <div class="card shadow rounded">
+  <div class="card shadow rounded" id="usersTable">
     <div class="card-header bg-primary text-white">
       <h4 class="mb-0">Lista korisnika</h4>
     </div>
@@ -33,22 +33,25 @@
             <tr>
               <th>ID</th>
               <th>Korisničko ime</th>
-              <th>Admin</th>
+              <th>Rola</th>
+              <th>Aktivan</th>
               <th>Akcija</th>
             </tr>
           </thead>
           <tbody>
             <?php foreach ($users as $user): ?>
-              <tr>
+              <tr data-id="<?= htmlspecialchars($user['member_id']) ?>" data-username="<?= htmlspecialchars($user["username"]) ?>">
                 <td><?= htmlspecialchars($user['member_id']) ?></td>
                 <td><?= htmlspecialchars($user['username']) ?></td>
                 <td>
-                  <?= $user['admin'] ? '<span class="badge bg-success">Da</span>' : '<span class="badge bg-secondary">Ne</span>' ?>
+                  <?= $user['admin'] ? '<span class="badge bg-success">Admin</span>' : '<span class="badge bg-secondary">Korisnik</span>' ?>
+                </td>
+                <td>
+                  <?= $user['aktivan'] ? '<span class="badge bg-success">Da</span>' : '<span class="badge bg-secondary">Ne</span>' ?>
                 </td>
                 <td>
                   <a href="<?= url('/users/' . $user['member_id'] . '/edit') ?>" class="btn btn-sm btn-outline-warning">Izmeni</a>
-                  <button data-id="<?= htmlspecialchars($user['member_id']) ?>" data-username="<?= htmlspecialchars($user["username"]) ?>"
-                    class="btn btn-sm btn-outline-danger delete-btn">Obriši</button>
+                  <button class="btn btn-sm btn-outline-danger" id="delete-btn">Obriši</button>
                 </td>
               </tr>
             <?php endforeach; ?>

@@ -34,7 +34,12 @@ class AuthController
      */
     public function index()
     {
-        return view("index.view.php");
+        try {
+            return view("index.view.php");
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
     }
 
     /**
@@ -58,7 +63,7 @@ class AuthController
         if ($validator->hasErrors()) {
             echo json_encode([
                 'success' => false,
-                'error' => implode("<br>", $validator->getErrors())
+                'error' => $validator->getErrors()
             ]);
             return;
         }
@@ -68,9 +73,8 @@ class AuthController
 
         // Provera da li korisnik postoji i da li lozinka odgovara
         if (!$user || !password_verify($password, $user['password'])) {
-            http_response_code(401); // Unauthorized status kod
             Logger::error("Pogresna lozinka ili username");
-            echo json_encode(['success' => false, 'error' => "Pogresna lozinka ili username"]);
+            echo json_encode(['success' => false, 'error' => "Pogrešna lozinka ili username"]);
             return;
         }
 

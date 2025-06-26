@@ -28,8 +28,13 @@ class ConfigurationController
      */
     public function index()
     {
-        $config = $this->configModel->getAll(); // Dobavlja sve konfiguracije iz baze
-        view("configuration/konfiguracija.view.php", ['config' => $config]); // Prosleđuje ih view fajlu za prikaz
+        try {
+            $config = $this->configModel->getAll(); // Dobavlja sve konfiguracije iz baze
+            return view("configuration/konfiguracija.view.php", ['config' => $config]); // Prosleđuje ih view fajlu za prikaz
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
     }
 
     /**
@@ -40,19 +45,24 @@ class ConfigurationController
      */
     public function update(string $key)
     {
-        // Čita JSON payload iz zahteva
-        $data = json_decode(file_get_contents("php://input"), true);
+        try {
+            // Čita JSON payload iz zahteva
+            $data = json_decode(file_get_contents("php://input"), true);
 
-        // Pokušava da ažurira vrednost u bazi
-        if (!$this->configModel->update($key, $data['value'])) {
-            // Ako ažuriranje ne uspe, vraća HTTP 500 i poruku o grešci
+            // Pokušava da ažurira vrednost u bazi
+            if (!$this->configModel->update($key, $data['value'])) {
+                // Ako ažuriranje ne uspe, vraća HTTP 500 i poruku o grešci
+                http_response_code(500);
+                echo json_encode(['error' => 'Failed to update configuration']);
+                return;
+            }
+
+            // Uspesan odgovor ako je ažuriranje prošlo bez greške
+            echo json_encode(['success' => true, 'message' => 'Configuration updated successfully']);
+        } catch (\Exception $e) {
             http_response_code(500);
-            echo json_encode(['error' => 'Failed to update configuration']);
-            return;
+            echo json_encode($e->getMessage());
         }
-
-        // Uspesan odgovor ako je ažuriranje prošlo bez greške
-        echo json_encode(['success' => true, 'message' => 'Configuration updated successfully']);
     }
 
     /**

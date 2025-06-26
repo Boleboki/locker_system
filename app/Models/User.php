@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\Database;
+use App\Core\JWT;
 use App\Core\Logger;
 
 class User extends Database
@@ -156,27 +157,27 @@ class User extends Database
      * @param int $admin Da li je admin (1 = da, 0 = ne)
      * @return bool True ako je unos uspešan
      */
-    public function add(string $username, string $password, int $admin): bool
+    public function add(array $data): bool
     {
         $stmt = null;
         try {
             $this->conn->begin_transaction(); // Pokreće transakciju
 
             // Hashuje lozinku radi bezbednosti
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
             if (!$hashedPassword) {
-                Logger::error("Failed to hash password for user: $username");
+                Logger::error("Failed to hash password for user: {$data['username']}");
                 throw new \Exception("Failed to hash password");
             }
 
-            $stmt = $this->conn->prepare("INSERT INTO " . self::MEMBERS_TABLE . " (username, password, admin) VALUES (?, ?, ?)");
+            $stmt = $this->conn->prepare("INSERT INTO " . self::MEMBERS_TABLE . " (username, password, admin, aktivan) VALUES (?, ?, ?, ?)");
             if (!$stmt) {
                 Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje parametre: string, string, int
-            if (!$stmt->bind_param("ssi", $username, $hashedPassword, $admin)) {
+            if (!$stmt->bind_param("ssii", $data['username'], $hashedPassword, $data['admin'], $data['aktivan'])) {
                 Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
@@ -190,6 +191,7 @@ class User extends Database
             return true;
         } catch (\Exception $e) {
             $this->conn->rollback(); // Vraća sve ako nešto pođe po zlu
+            Logger::error($e->getMessage());
             throw $e;
         } finally {
             if ($stmt) {
@@ -242,25 +244,22 @@ class User extends Database
      * Ažurira korisničke podatke u bazi.
      *
      * @param int $id ID korisnika koji se menja
-     * @param string $username Novo korisničko ime
-     * @param string $password Nova lozinka (već hashovana ili plain)
-     * @param int $admin Admin status (1 = admin, 0 = običan korisnik)
-     * @return bool True ako je uspešno ažuriranje
+     * @param array $data Asocijativni niz sa novim podacima korisnika
      */
-    public function edit(int $id, string $username, string $password, int $admin): bool
+    public function edit(int $id, array $data): bool
     {
         $stmt = null;
         try {
             $this->conn->begin_transaction();
 
-            $stmt = $this->conn->prepare("UPDATE " . self::MEMBERS_TABLE . " SET username = ?, password = ?, admin = ? WHERE member_id = ?");
+            $stmt = $this->conn->prepare("UPDATE " . self::MEMBERS_TABLE . " SET username = ?, password = ?, admin = ?, aktivan = ? WHERE member_id = ?");
             if (!$stmt) {
                 Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje parametre za ažuriranje
-            if (!$stmt->bind_param("ssii", $username, $password, $admin, $id)) {
+            if (!$stmt->bind_param("ssiii", $data['username'], $data['password'], $data['admin'], $data['aktivan'], $id)) {
                 Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
@@ -280,5 +279,15 @@ class User extends Database
                 $stmt->close();
             }
         }
+    }
+    public function isAdmin(): bool
+    {
+        if (!isset($_COOKIE['token'])) return false;
+        $token = $_COOKIE['token'];
+        $jwt = new JWT();
+        $payload = $jwt->decode($token);
+        if (!$payload || $payload['admin'] !== 1) return false;
+
+        return true;
     }
 }

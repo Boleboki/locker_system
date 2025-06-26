@@ -9,5 +9,4 @@ define("DB_PASS", "");
 
 define("LOG_RETENTION_DAYS", 14);
 
-// define("BASE_PATH", __DIR__ . "/../");
 define("BASE_URL", "/ormarici");

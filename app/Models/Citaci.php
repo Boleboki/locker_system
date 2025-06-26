@@ -49,6 +49,7 @@ class Citaci extends Database
 
             return $result->fetch_all(MYSQLI_ASSOC);
         } catch (\Exception $e) {
+            Logger::error($e->getMessage());
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -90,6 +91,7 @@ class Citaci extends Database
 
             return $result->fetch_assoc() ?: null; // Vraća asocijativni niz ili null ako nije pronađeno
         } catch (\Exception $e) {
+            Logger::error($e->getMessage());
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {

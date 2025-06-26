@@ -35,9 +35,14 @@ class CitaciController
      */
     public function index()
     {
-        return view("citaci/index.view.php", [
-            'config' => $this->citaci->getAll() // Dohvatanje svih čitača iz baze
-        ]);
+        try {
+            return view("citaci/index.view.php", [
+                'config' => $this->citaci->getAll() // Dohvatanje svih čitača iz baze
+            ]);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
     }
 
     /**
@@ -48,14 +53,19 @@ class CitaciController
      */
     public function getById(int $id)
     {
-        $citac = $this->citaci->getById($id); // SQL: SELECT WHERE ID
-        if (!$citac) {
-            http_response_code(404); // Postavljanje HTTP koda ako nije pronađen
-            echo json_encode(['error' => 'Čitač nije pronađen']);
-            exit;
-        }
+        try {
+            $citac = $this->citaci->getById($id); // SQL: SELECT WHERE ID
+            if (!$citac) {
+                http_response_code(404); // Postavljanje HTTP koda ako nije pronađen
+                echo json_encode(['error' => 'Čitač nije pronađen']);
+                exit;
+            }
 
-        echo json_encode($citac); // Vraćanje pronađenog čitača kao JSON
+            echo json_encode($citac); // Vraćanje pronađenog čitača kao JSON
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
     }
 
     /**
@@ -65,7 +75,12 @@ class CitaciController
      */
     public function create()
     {
-        return view("citaci/create.view.php");
+        try {
+            return view("citaci/create.view.php");
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
     }
 
     /**
