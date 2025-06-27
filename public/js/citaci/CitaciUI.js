@@ -5,6 +5,9 @@
  * - Prikaz modala za izmenu čitača sa popunjenim podacima
  * - Ažuriranje vrednosti reda u tabeli u interfejsu
  * - Otvaranje i zatvaranje modala za potvrdu brisanja
+ *
+ * @author
+ * @version 1.0.1
  */
 
 export class CitaciUI {
@@ -35,16 +38,6 @@ export class CitaciUI {
       data.citac_za_radno_vreme == 1;
     document.getElementById("citac_za_kontrolu_pristupa").checked =
       data.citac_za_kontrolu_pristupa == 1;
-    document.getElementById("citac_za_evidenciju_rada_na_masinama").checked =
-      data.citac_za_evidenciju_rada_na_masinama == 1;
-    document.getElementById("citac_za_formiranje").checked =
-      data.citac_za_formiranje == 1;
-    document.getElementById("citac_za_el_energiju").checked =
-      data.citac_za_el_energiju == 1;
-    document.getElementById("citac_za_kontrolu_vode").checked =
-      data.citac_za_kontrolu_vode == 1;
-    document.getElementById("citac_za_menzu").checked =
-      data.citac_za_menzu == 1;
     document.getElementById("citac_za_ormarice").checked =
       data.citac_za_ormarice == 1;
     document.getElementById("citac_za_grupu_ormarica").checked =
@@ -80,12 +73,6 @@ export class CitaciUI {
     cells[i++].textContent = data.aktivan == 1 ? "Da" : "Ne";
     cells[i++].textContent = data.citac_za_radno_vreme == 1 ? "Da" : "Ne";
     cells[i++].textContent = data.citac_za_kontrolu_pristupa == 1 ? "Da" : "Ne";
-    cells[i++].textContent =
-      data.citac_za_evidenciju_rada_na_masinama == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_formiranje == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_el_energiju == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_kontrolu_vode == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_menzu == 1 ? "Da" : "Ne";
     cells[i++].textContent = data.citac_za_ormarice == 1 ? "Da" : "Ne";
     cells[i++].textContent = data.citac_za_grupu_ormarica == 1 ? "Da" : "Ne";
     cells[i++].textContent = data.citac_za_odjavu == 1 ? "Da" : "Ne";
@@ -159,13 +146,6 @@ export class CitaciUI {
     document.getElementById("aktivan").checked = false;
     document.getElementById("citac_za_radno_vreme").checked = false;
     document.getElementById("citac_za_kontrolu_pristupa").checked = false;
-    document.getElementById(
-      "citac_za_evidenciju_rada_na_masinama"
-    ).checked = false;
-    document.getElementById("citac_za_formiranje").checked = false;
-    document.getElementById("citac_za_el_energiju").checked = false;
-    document.getElementById("citac_za_kontrolu_vode").checked = false;
-    document.getElementById("citac_za_menzu").checked = false;
     document.getElementById("citac_za_ormarice").checked = false;
     document.getElementById("citac_za_grupu_ormarica").checked = false;
     document.getElementById("citac_za_odjavu").checked = false;
@@ -202,16 +182,6 @@ export class CitaciUI {
       citac_za_kontrolu_pristupa: document.getElementById(
         "citac_za_kontrolu_pristupa"
       ).checked,
-      citac_za_evidenciju_rada_na_masinama: document.getElementById(
-        "citac_za_evidenciju_rada_na_masinama"
-      ).checked,
-      citac_za_formiranje: document.getElementById("citac_za_formiranje")
-        .checked,
-      citac_za_el_energiju: document.getElementById("citac_za_el_energiju")
-        .checked,
-      citac_za_kontrolu_vode: document.getElementById("citac_za_kontrolu_vode")
-        .checked,
-      citac_za_menzu: document.getElementById("citac_za_menzu").checked,
       citac_za_ormarice: document.getElementById("citac_za_ormarice").checked,
       citac_za_grupu_ormarica: document.getElementById(
         "citac_za_grupu_ormarica"

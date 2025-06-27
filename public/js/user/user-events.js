@@ -7,6 +7,9 @@ import { UserUI } from "./UserUI.js";
  * - brisanje korisnika
  * - izmena korisnika
  * - dodavanje novog korisnika
+ *
+ * @author
+ * @version 1.0.1
  */
 export function initializeUserEvents() {
   const usersTable = document.querySelector("#usersTable");
@@ -55,7 +58,7 @@ export function initializeUserEvents() {
         showAlert(response.error, "danger");
       }
     } catch (err) {
-      showAlert("Greška prilikom brisanja korisnika", "danger");
+      showAlert("Greška prilikom brisanja korisnika: " + err, "danger");
       console.error("Greška prilikom brisanja korisnika:", e);
     }
   });
@@ -84,7 +87,7 @@ export function initializeUserEvents() {
         // Prikaz uspešne poruke
         showAlert(response.message, "success");
       } catch (e) {
-        showAlert("Greška u izmeni korisnika", "danger");
+        showAlert("Greška u izmeni korisnika: " + e, "danger");
         console.log("Greška prilikom izmene korisnika:", e);
       }
     }
@@ -112,7 +115,7 @@ export function initializeUserEvents() {
         showAlert(response.message, "success");
       } catch (e) {
         console.error("Greška prilikom dodavanja korisnika:", e);
-        showAlert("Greška u dodavanju korisnika", "danger");
+        showAlert("Greška u dodavanju korisnika: " + e, "danger");
       }
     }
   });

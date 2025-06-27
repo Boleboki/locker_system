@@ -1,9 +1,11 @@
-// ====================================================================
-// OVAJ FAJL:
-// Sadrži klasu `AuthManager` koja upravlja autentifikacijom korisnika.
-// Omogućava login (POST) i logout (DELETE) komunikaciju sa serverom.
-// Oslanja se na `url` helper funkciju za formiranje URL putanja ka API-ju.
-// ====================================================================
+/**
+ * Ovaj fajl sadrži klasu `AuthManager` koja upravlja autentifikacijom korisnika.
+ * Omogućava login (POST) i logout (DELETE) komunikaciju sa serverom.
+ * Oslanja se na `url` helper funkciju za formiranje URL putanja ka API-ju.
+ *
+ * @author
+ * @version 1.0.1
+ */
 
 import { url } from "../helper.js";
 

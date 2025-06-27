@@ -12,6 +12,9 @@ use Exception;
 /**
  * Kontroler za upravljanje korisnicima.
  * Obezbeđuje CRUD funkcionalnosti i validaciju podataka korisnika.
+ *
+ * @author 
+ * @version 1.0.1
  */
 class UserController
 {
@@ -21,6 +24,11 @@ class UserController
     {
         // Inicijalizuje model korisnika za rad sa bazom
         $this->user = new User();
+    }
+
+    public function __destruct()
+    {
+        $this->user->disconnect();
     }
 
     /**
@@ -33,7 +41,7 @@ class UserController
             return view("users/index.view.php", [
                 "users" => $this->user->getAll()
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
@@ -47,7 +55,7 @@ class UserController
     {
         try {
             return view("users/create.view.php");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
@@ -107,13 +115,9 @@ class UserController
                 "success" => true,
                 "message" => "Korisnik uspešno dodat"
             ]);
-        } catch (\Exception $e) {
-            // Server error
+        } catch (\Throwable $e) {
             http_response_code(500);
-            echo json_encode([
-                "success" => false,
-                "error" => "Došlo je do greške: " . $e->getMessage()
-            ]);
+            echo json_encode($e->getMessage());
         }
     }
 
@@ -152,12 +156,9 @@ class UserController
                 "success" => true,
                 "message" => "Korisnik je obrisan"
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
-            echo json_encode([
-                "success" => false,
-                "error" => "Došlo je do greške: " . $e->getMessage()
-            ]);
+            echo json_encode($e->getMessage());
         }
     }
 
@@ -180,12 +181,9 @@ class UserController
             return view("users/edit.view.php", [
                 "user" => $user
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
-            echo json_encode([
-                "success" => false,
-                "error" => "Došlo je do greške: " . $e->getMessage()
-            ]);
+            echo json_encode($e->getMessage());
         }
     }
 
@@ -255,12 +253,9 @@ class UserController
                     "error" => "Korisnik nije izmenjen"
                 ]);
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
-            echo json_encode([
-                "success" => false,
-                "error" => "Došlo je do greške: " . $e->getMessage()
-            ]);
+            echo json_encode($e->getMessage());
         }
     }
 }

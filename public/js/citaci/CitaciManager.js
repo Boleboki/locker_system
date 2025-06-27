@@ -1,5 +1,5 @@
 /**
- * Klasa CitaciManager omogućava komunikaciju sa serverom (REST API)
+ * Klasa `CitaciManager` omogućava komunikaciju sa serverom (REST API)
  * za entitet "citaci" pomoću HTTP zahteva.
  *
  * Obezbeđuje metode za:
@@ -8,6 +8,9 @@
  * - Dodavanje novog čitača
  * - Ažuriranje postojećeg čitača
  * - Brisanje čitača
+ *
+ * @author
+ * @version 1.0.1
  */
 
 import { url } from "../helper.js";

@@ -2,6 +2,9 @@
  * Klasa ConfigurationManager se koristi za komunikaciju sa backend API-jem
  * u vezi sa ažuriranjem i brisanjem konfiguracionih stavki.
  * Metode koriste async/await i fetch API za HTTP zahteve.
+ *
+ * @author
+ * @version 1.0.1
  */
 
 import { url } from "../helper.js";

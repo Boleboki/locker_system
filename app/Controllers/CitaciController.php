@@ -9,6 +9,9 @@
  * - Ažuriranje postojećeg čitača
  * - Brisanje čitača
  * Sve metode koriste model `Citaci` za komunikaciju sa bazom.
+ * 
+ * @author 
+ * @version 1.0.1
  */
 
 namespace App\Controllers;
@@ -28,6 +31,11 @@ class CitaciController
         $this->citaci = new Citaci();
     }
 
+    public function __destruct()
+    {
+        $this->citaci->disconnect();
+    }
+
     /**
      * Prikazuje stranicu sa svim konfiguracijama čitača.
      * Ne prima parametre.
@@ -39,7 +47,7 @@ class CitaciController
             return view("citaci/index.view.php", [
                 'config' => $this->citaci->getAll() // Dohvatanje svih čitača iz baze
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
@@ -56,13 +64,13 @@ class CitaciController
         try {
             $citac = $this->citaci->getById($id); // SQL: SELECT WHERE ID
             if (!$citac) {
-                http_response_code(404); // Postavljanje HTTP koda ako nije pronađen
+                http_response_code(500); // Postavljanje HTTP koda ako nije pronađen
                 echo json_encode(['error' => 'Čitač nije pronađen']);
                 exit;
             }
 
             echo json_encode($citac); // Vraćanje pronađenog čitača kao JSON
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
@@ -77,7 +85,7 @@ class CitaciController
     {
         try {
             return view("citaci/create.view.php");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
@@ -102,24 +110,17 @@ class CitaciController
             }
 
             // Pokušava da sačuva novog čitača u bazi
-            if (!$this->citaci->create($data)) {
-                http_response_code(500);
-                echo json_encode([
-                    'success' => false,
-                    'error' => 'Greška prilikom dodavanja čitača.'
-                ]);
-                exit;
-            }
+            $this->citaci->create($data);
 
             // Uspešan odgovor
             echo json_encode([
                 'success' => true,
                 'message' => 'Citac je uspesno dodat',
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Hvata i prikazuje nepredviđene greške
             http_response_code(500);
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode($e->getMessage());
         }
 
         exit;
@@ -144,15 +145,7 @@ class CitaciController
                 exit;
             }
 
-            // Pokušaj ažuriranja čitača u bazi
-            if (!$this->citaci->update($id, $data)) {
-                http_response_code(500);
-                echo json_encode([
-                    'success' => false,
-                    'error' => 'Greška prilikom ažuriranja čitača.'
-                ]);
-                exit;
-            }
+            $this->citaci->update($id, $data);
 
             // Vraća ažurirane podatke i poruku o uspehu
             echo json_encode([
@@ -160,9 +153,9 @@ class CitaciController
                 'message' => 'Citac je uspesno ažuriran',
                 'data' => $this->citaci->getById($data['id_citaca']) // Ponovno dohvaćanje ažuriranog zapisa
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode($e->getMessage());
         }
 
         exit;
@@ -178,24 +171,17 @@ class CitaciController
     {
         try {
             // Pokušaj brisanja zapisa iz baze
-            if (!$this->citaci->delete($id)) {
-                http_response_code(500);
-                echo json_encode([
-                    'success' => false,
-                    'error' => 'Greška prilikom brisanja čitača.'
-                ]);
-                exit;
-            }
+            $this->citaci->delete($id);
 
             // Potvrda o uspešnom brisanju
             echo json_encode([
                 'success' => true,
                 'message' => 'Citac je uspesno obrisan',
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Neobrađena greška
             http_response_code(500);
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode($e->getMessage());
         }
 
         exit;

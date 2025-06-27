@@ -84,24 +84,19 @@
                         <th rowspan="3" colspan="1">OPIS</th>
                         <th rowspan="3" colspan="1">TIP</th>
                         <th rowspan="3" colspan="1">AKTIVAN</th>
-                        <th rowspan="1" colspan="10">VRSTA ČITAČA</th>
+                        <th rowspan="1" colspan="5">VRSTA ČITAČA</th>
                         <th rowspan="2" colspan="2">DELAY</th>
                         <th rowspan="2" colspan="2">SN</th>
                         <th rowspan="2" colspan="3">ORMARIĆI</th>
                         <th rowspan="3" colspan="4">EDIT</th>
                     </tr>
                     <tr>
-                        <th rowspan="1" colspan="3">EVIDENCIJA</th>
-                        <th rowspan="1" colspan="7">OSTALO</th>
+                        <th rowspan="1" colspan="2">EVIDENCIJA</th>
+                        <th rowspan="1" colspan="3">OSTALO</th>
                     </tr>
                     <tr>
                         <th rowspan="1" colspan="1">Radnog vremena</th>
                         <th rowspan="1" colspan="1">Kontrola pristupa</th>
-                        <th rowspan="1" colspan="1">Rad na mašinama</th>
-                        <th rowspan="1" colspan="1">Za formiranje</th>
-                        <th rowspan="1" colspan="1">Za električnu energiju</th>
-                        <th rowspan="1" colspan="1">Za vodu</th>
-                        <th rowspan="1" colspan="1">Za menzu</th>
                         <th rowspan="1" colspan="1">Za ormariće</th>
                         <th rowspan="1" colspan="1">Za grupu ormarića</th>
                         <th rowspan="1" colspan="1">Za odjavu</th>
@@ -123,11 +118,6 @@
                             <td class="text-center align-middle"><?= $row['aktivan'] ? 'Da' : 'Ne' ?></td>
                             <td class="text-center align-middle"><?= $row['citac_za_radno_vreme'] ? 'Da' : 'Ne' ?></td>
                             <td class="text-center align-middle"><?= $row['citac_za_kontrolu_pristupa'] ? 'Da' : 'Ne' ?></td>
-                            <td class="text-center align-middle"><?= $row['citac_za_evidenciju_rada_na_masinama'] ? 'Da' : 'Ne' ?></td>
-                            <td class="text-center align-middle"><?= $row['citac_za_formiranje'] ? 'Da' : 'Ne' ?></td>
-                            <td class="text-center align-middle"><?= $row['citac_za_el_energiju'] ? 'Da' : 'Ne' ?></td>
-                            <td class="text-center align-middle"><?= $row['citac_za_kontrolu_vode'] ? 'Da' : 'Ne' ?></td>
-                            <td class="text-center align-middle"><?= $row['citac_za_menzu'] ? 'Da' : 'Ne' ?></td>
                             <td class="text-center align-middle"><?= $row['citac_za_ormarice'] ? 'Da' : 'Ne' ?></td>
                             <td class="text-center align-middle"><?= $row['citac_za_grupu_ormarica'] ? 'Da' : 'Ne' ?></td>
                             <td class="text-center align-middle"><?= $row['citac_za_odjavu'] ? 'Da' : 'Ne' ?></td>
@@ -225,43 +215,23 @@
                     <div class="section-title">Funkcionalnosti čitača</div>
 
                     <div class="row">
-                        <div class="col-md-3 form-check">
-                            <input class="form-check-input" type="checkbox" id="citac_za_formiranje">
-                            <label class="form-check-label" for="citac_za_formiranje">za formiranje</label>
-                        </div>
-                        <div class="col-md-3 form-check">
+                        <div class="col-md-4 form-check">
                             <input class="form-check-input" type="checkbox" id="citac_za_kontrolu_pristupa">
                             <label class="form-check-label" for="citac_za_kontrolu_pristupa">za kontrolu pristupa</label>
                         </div>
-                        <div class="col-md-3 form-check">
+                        <div class="col-md-4 form-check">
                             <input class="form-check-input" type="checkbox" id="citac_za_radno_vreme">
                             <label class="form-check-label" for="citac_za_radno_vreme">za radno vreme</label>
                         </div>
-                        <div class="col-md-3 form-check">
-                            <input class="form-check-input" type="checkbox" id="citac_za_evidenciju_rada_na_masinama">
-                            <label class="form-check-label" for="citac_za_evidenciju_rada_na_masinama">za rad na mašinama</label>
-                        </div>
-                        <div class="col-md-3 form-check">
-                            <input class="form-check-input" type="checkbox" id="citac_za_el_energiju">
-                            <label class="form-check-label" for="citac_za_el_energiju">za električnu energiju</label>
-                        </div>
-                        <div class="col-md-3 form-check">
-                            <input class="form-check-input" type="checkbox" id="citac_za_kontrolu_vode">
-                            <label class="form-check-label" for="citac_za_kontrolu_vode">za vodu</label>
-                        </div>
-                        <div class="col-md-3 form-check">
-                            <input class="form-check-input" type="checkbox" id="citac_za_menzu">
-                            <label class="form-check-label" for="citac_za_menzu">za menzu</label>
-                        </div>
-                        <div class="col-md-3 form-check">
+                        <div class="col-md-4 form-check">
                             <input class="form-check-input" type="checkbox" id="citac_za_ormarice">
                             <label class="form-check-label" for="citac_za_ormarice">za ormariće</label>
                         </div>
-                        <div class="col-md-3 form-check">
+                        <div class="col-md-4 form-check">
                             <input class="form-check-input" type="checkbox" id="citac_za_grupu_ormarica">
                             <label class="form-check-label" for="citac_za_grupu_ormarica">za grupu ormarića</label>
                         </div>
-                        <div class="col-md-3 form-check">
+                        <div class="col-md-4 form-check">
                             <input class="form-check-input" type="checkbox" id="citac_za_odjavu">
                             <label class="form-check-label" for="citac_za_odjavu">za odjavu</label>
                         </div>

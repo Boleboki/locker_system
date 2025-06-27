@@ -1,26 +1,27 @@
-// ====================================================================
-// OVAJ FAJL:
-// Zadužen je za postavljanje događaja (event listener-a) na UI elemente
-// za login i logout funkcionalnosti. Komunicira sa AuthManager-om i AuthUI-jem
-// radi obrade autentifikacije korisnika i prikaza poruka.
-// ====================================================================
+/**
+ * Ovaj fajl je zadužen za postavljanje događaja (event listener-a) na UI elemente
+ * za login i logout funkcionalnosti. Komunicira sa `AuthManager` i `AuthUI` klasama
+ * radi obrade autentifikacije korisnika i prikaza poruka.
+ *
+ * @author
+ * @version 1.0.1
+ */
 
 import { AuthUI } from "./AuthUI.js";
 import { AuthManager } from "./AuthManager.js";
 import { showAlert } from "../helper.js";
-
-// ====================================================================
-// initializeAuthEvents()
-// Postavlja event listenere za login i logout dugmad na stranici.
-//
-// Parametri: nema
-// Povratna vrednost: nema (funkcija samo registruje događaje)
-//
-// U okviru funkcije se:
-// - obrađuje klik na login dugme i šalju kredencijali AuthManager-u,
-// - prikazuju greške ako ih ima,
-// - izvršava redirekcija nakon uspešnog login/logout procesa.
-// ====================================================================
+/**
+ * initializeAuthEvents()
+ * Postavlja event listenere za login i logout dugmad na stranici.
+ *
+ * Parametri: nema
+ * Povratna vrednost: nema (funkcija samo registruje događaje)
+ *
+ * U okviru funkcije se:
+ * - obrađuje klik na login dugme i šalju kredencijali AuthManager-u,
+ * - prikazuju greške ako ih ima,
+ * - izvršava redirekcija nakon uspešnog login/logout procesa.
+ */
 export function initializeAuthEvents() {
   const loginForm = document.querySelector("#loginForm");
   const logoutBtn = document.querySelector("#logoutBtn");
@@ -54,7 +55,7 @@ export function initializeAuthEvents() {
       } catch (err) {
         // Uhvati sve greške vezane za komunikaciju sa serverom
         console.error("Greška prilikom logina: ", err);
-        showAlert("Greška u komunikaciji sa serverom", "danger"); // Prikaz upozorenja
+        showAlert("Greška u komunikaciji sa serverom: " + err, "danger"); // Prikaz upozorenja
       }
     }
   });
@@ -70,7 +71,7 @@ export function initializeAuthEvents() {
     } catch (err) {
       // Obrada grešaka prilikom logout-a
       console.error("Greška prilikom logout-a: ", err);
-      showAlert("Greška u komunikaciji sa serverom", "danger");
+      showAlert("Greška u komunikaciji sa serverom: " + err, "danger");
     }
   });
 }

@@ -1,5 +1,12 @@
 import { url } from "../helper.js";
-
+/**
+ * Klasa `UserManager` omogućava upravljanje korisnicima kroz REST API
+ * pomoću HTTP zahteva (POST, PUT, DELETE) za dodavanje, izmenu i brisanje korisnika.
+ * Sve metode su statičke i asinkrone, vraćaju Promise sa odgovorom servera.
+ *
+ * @author
+ * @version 1.0.1
+ */
 export class UserManager {
   /**
    * Dodaje novog korisnika slanjem POST zahteva na server.

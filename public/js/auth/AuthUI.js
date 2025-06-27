@@ -1,9 +1,11 @@
-// ====================================================================
-// OVAJ FAJL:
-// Sadrži klasu `AuthUI` koja je zadužena za korisnički interfejs
-// prilikom autentifikacije. Konkretno, prikazuje poruke o greškama
-// kada login ne uspe.
-// ====================================================================
+/**
+ * Ovaj fajl sadrži klasu `AuthUI` koja je zadužena za korisnički interfejs
+ * prilikom autentifikacije. Konkretno, prikazuje poruke o greškama
+ * kada login ne uspe.
+ *
+ * @author
+ * @version 1.0.1
+ */
 
 export class AuthUI {
   /**

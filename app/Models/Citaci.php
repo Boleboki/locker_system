@@ -9,7 +9,10 @@ use App\Core\Logger;
  * Model za rad sa tabelom 'citaci' u bazi podataka
  * Ova klasa omogućava CRUD operacije nad tabelom citaci
  * Nasleđuje baznu klasu Database kako bi koristila konekciju ka MySQL bazi
+ * @author 
+ * @version 1.0.1
  */
+
 class Citaci extends Database
 {
     private const TABLE_NAME = 'citaci';
@@ -30,6 +33,7 @@ class Citaci extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NAME);
             if (!$stmt) {
                 Logger::error("Failed to prepare statement: " . $this->conn->error);
@@ -48,8 +52,8 @@ class Citaci extends Database
             }
 
             return $result->fetch_all(MYSQLI_ASSOC);
-        } catch (\Exception $e) {
-            Logger::error($e->getMessage());
+        } catch (\Throwable $e) {
+            Logger::error("Error in Citaci->getAll method: " . $e->getMessage());
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -67,6 +71,8 @@ class Citaci extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
+
             $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE id_citaca = ?");
             if (!$stmt) {
                 Logger::error("Failed to prepare statement: " . $this->conn->error);
@@ -90,8 +96,8 @@ class Citaci extends Database
             }
 
             return $result->fetch_assoc() ?: null; // Vraća asocijativni niz ili null ako nije pronađeno
-        } catch (\Exception $e) {
-            Logger::error($e->getMessage());
+        } catch (\Throwable $e) {
+            Logger::error("Error in Citaci->getById method: " . $e->getMessage());
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -110,19 +116,16 @@ class Citaci extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
+
             $this->conn->begin_transaction();
 
             $sql = "INSERT INTO " . self::TABLE_NAME . " (
             id_citaca,
             opis_citaca,
             tip_citaca,
-            citac_za_formiranje,
             citac_za_radno_vreme,
             citac_za_kontrolu_pristupa,
-            citac_za_evidenciju_rada_na_masinama,
-            citac_za_el_energiju,
-            citac_za_kontrolu_vode,
-            citac_za_menzu,
             citac_za_ormarice,
             citac_za_grupu_ormarica,
             citac_za_odjavu,
@@ -135,7 +138,7 @@ class Citaci extends Database
             brojevi_ormarica,
             aktivan,
             brojevi_ormarica_po_indexu
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $this->conn->prepare($sql);
             if (!$stmt) {
@@ -148,13 +151,8 @@ class Citaci extends Database
                 'id_citaca',
                 'opis_citaca',
                 'tip_citaca',
-                'citac_za_formiranje',
                 'citac_za_radno_vreme',
                 'citac_za_kontrolu_pristupa',
-                'citac_za_evidenciju_rada_na_masinama',
-                'citac_za_el_energiju',
-                'citac_za_kontrolu_vode',
-                'citac_za_menzu',
                 'citac_za_ormarice',
                 'citac_za_grupu_ormarica',
                 'citac_za_odjavu',
@@ -176,17 +174,12 @@ class Citaci extends Database
             }
 
             $bind = $stmt->bind_param(
-                "issssssssssssiisiiisii",
+                "isssssssiisiiisii",
                 $data['id_citaca'],
                 $data['opis_citaca'],
                 $data['tip_citaca'],
-                $data['citac_za_formiranje'],
                 $data['citac_za_radno_vreme'],
                 $data['citac_za_kontrolu_pristupa'],
-                $data['citac_za_evidenciju_rada_na_masinama'],
-                $data['citac_za_el_energiju'],
-                $data['citac_za_kontrolu_vode'],
-                $data['citac_za_menzu'],
                 $data['citac_za_ormarice'],
                 $data['citac_za_grupu_ormarica'],
                 $data['citac_za_odjavu'],
@@ -214,10 +207,10 @@ class Citaci extends Database
             $this->conn->commit();
 
             return true;
-        } catch (\Exception $e) {
-            Logger::error("Error in create method: " . $e->getMessage());
+        } catch (\Throwable $e) {
             $this->conn->rollback();
-            throw $e;
+            Logger::error("Error in Citaci->create method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
                 $stmt->close();
@@ -235,19 +228,16 @@ class Citaci extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
+
             $this->conn->begin_transaction();
 
             $sql = "UPDATE " . self::TABLE_NAME . " SET
             id_citaca = ?,
             opis_citaca = ?,
             tip_citaca = ?,
-            citac_za_formiranje = ?,
             citac_za_radno_vreme = ?,
             citac_za_kontrolu_pristupa = ?,
-            citac_za_evidenciju_rada_na_masinama = ?,
-            citac_za_el_energiju = ?,
-            citac_za_kontrolu_vode = ?,
-            citac_za_menzu = ?,
             citac_za_ormarice = ?,
             citac_za_grupu_ormarica = ?,
             citac_za_odjavu = ?,
@@ -272,13 +262,8 @@ class Citaci extends Database
                 'id_citaca',
                 'opis_citaca',
                 'tip_citaca',
-                'citac_za_formiranje',
                 'citac_za_radno_vreme',
                 'citac_za_kontrolu_pristupa',
-                'citac_za_evidenciju_rada_na_masinama',
-                'citac_za_el_energiju',
-                'citac_za_kontrolu_vode',
-                'citac_za_menzu',
                 'citac_za_ormarice',
                 'citac_za_grupu_ormarica',
                 'citac_za_odjavu',
@@ -298,18 +283,14 @@ class Citaci extends Database
                     throw new \Exception("Missing required data field: $key");
                 }
             }
-            $bind = $stmt->bind_param(
-                "issssssssssssiisiiisiii",
+
+            if (!$stmt->bind_param(
+                "isssssssiisiiisiii",
                 $data["id_citaca"],
                 $data['opis_citaca'],
                 $data['tip_citaca'],
-                $data['citac_za_formiranje'],
                 $data['citac_za_radno_vreme'],
                 $data['citac_za_kontrolu_pristupa'],
-                $data['citac_za_evidenciju_rada_na_masinama'],
-                $data['citac_za_el_energiju'],
-                $data['citac_za_kontrolu_vode'],
-                $data['citac_za_menzu'],
                 $data['citac_za_ormarice'],
                 $data['citac_za_grupu_ormarica'],
                 $data['citac_za_odjavu'],
@@ -323,9 +304,7 @@ class Citaci extends Database
                 $data['aktivan'],
                 $data['brojevi_ormarica_po_indexu'],
                 $id
-            );
-
-            if (!$bind) {
+            )) {
                 Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
@@ -337,10 +316,10 @@ class Citaci extends Database
 
             $this->conn->commit();
             return true;
-        } catch (\Exception $e) {
-            Logger::error("Error in update method: " . $e->getMessage());
+        } catch (\Throwable $e) {
             $this->conn->rollback();
-            throw $e;
+            Logger::error("Error in Citaci->update method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
                 $stmt->close();
@@ -357,6 +336,8 @@ class Citaci extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
+
             $this->conn->begin_transaction();
 
             $sql = "DELETE FROM " . self::TABLE_NAME . " WHERE id_citaca = ?";
@@ -378,10 +359,10 @@ class Citaci extends Database
 
             $this->conn->commit();
             return true;
-        } catch (\Exception $e) {
-            Logger::error("Error in delete method: " . $e->getMessage());
+        } catch (\Throwable $e) {
             $this->conn->rollback();
-            throw $e;
+            Logger::error("Error in Citaci->delete method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
                 $stmt->close();

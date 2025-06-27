@@ -4,6 +4,8 @@
  * Klasa `Configure` omogućava pristup i upravljanje podešavanjima sistema
  * koja su smeštena u tabeli `confingure` baze podataka.
  * Pruža metode za čitanje svih podešavanja, ažuriranje određenog para ključ/vrednost i brisanje ključa.
+ * @author 
+ * @version 1.0.1
  */
 
 namespace App\Models;
@@ -30,6 +32,7 @@ class Configure extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             // Priprema SQL upita za čitanje svih redova iz konfiguracione tabele
             $stmt = $this->conn->prepare("SELECT * FROM " . self::CONFIGURATION_TABLE . " ORDER BY name");
             if (!$stmt) {
@@ -52,7 +55,8 @@ class Configure extends Database
 
             // Vraća sve rezultate kao niz asocijativnih nizova
             return $result->fetch_all(MYSQLI_ASSOC);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            Logger::error("Error in Configure->getAll method: " . $e->getMessage());
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -72,6 +76,7 @@ class Configure extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             $this->conn->begin_transaction(); // Pokreće SQL transakciju
 
             // Priprema SQL upit za ažuriranje vrednosti
@@ -95,9 +100,10 @@ class Configure extends Database
 
             $this->conn->commit(); // Potvrđuje transakciju
             return true;
-        } catch (\Exception $e) {
-            $this->conn->rollback(); // Poništava transakciju u slučaju greške
-            throw $e;
+        } catch (\Throwable $e) {
+            $this->conn->rollback();
+            Logger::error("Error in Configure->update method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
                 $stmt->close(); // Zatvara upit
@@ -114,6 +120,7 @@ class Configure extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             $this->conn->begin_transaction();
 
             // Priprema SQL upit za brisanje parametra
@@ -136,9 +143,10 @@ class Configure extends Database
 
             $this->conn->commit();
             return true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->conn->rollback();
-            throw $e;
+            Logger::error("Error in Configure->delete method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
                 $stmt->close();

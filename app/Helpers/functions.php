@@ -24,9 +24,23 @@ function base_path($path)
 
 function view($path, $attributes = [])
 {
-    extract($attributes);
-    require base_path('app/views/' . $path);
+    try {
+        $fullPath = base_path('app/views/' . $path);
+
+        if (!file_exists($fullPath)) {
+            throw new \Exception("View fajl ne postoji: $fullPath");
+        }
+
+        extract($attributes);
+        include $fullPath;
+    } catch (\Throwable $e) {
+        http_response_code(500);
+        echo "Greška pri učitavanju view fajla: " . htmlspecialchars($e->getMessage());
+        throw $e;
+        // Ako hoćeš: logovanje, fallback view itd.
+    }
 }
+
 
 function redirect($path)
 {

@@ -13,6 +13,9 @@ use App\Models\User;
  * Kontroler za autentifikaciju korisnika.
  * Omogućava prijavu (login), odjavu (logout) i prikaz početne stranice.
  * Rukuje validacijom korisničkih podataka, kreiranjem JWT tokena i upravlja kolačićima sesije.
+ * 
+ * @author 
+ * @version 1.0.1
  */
 class AuthController
 {
@@ -25,6 +28,11 @@ class AuthController
     {
         $this->user = new User;
         $this->jwt = new JWTAuth;
+    }
+
+    public function __destruct()
+    {
+        $this->user->disconnect();
     }
 
     /**

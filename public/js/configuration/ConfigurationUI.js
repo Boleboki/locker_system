@@ -1,6 +1,8 @@
 /**
  * Klasa ConfigurationUI upravlja prikazom i interakcijom modala za konfiguraciju
  * i omogućava ažuriranje i brisanje redova u UI tabeli konfiguracionih podataka.
+ * @author
+ * @version 1.0.1
  */
 export class ConfigurationUI {
   /**

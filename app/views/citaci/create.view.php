@@ -107,32 +107,12 @@
 
         <div class="row">
             <div class="col-md-3 form-check">
-                <input class="form-check-input" type="checkbox" id="citac_za_formiranje">
-                <label class="form-check-label" for="citac_za_formiranje">za formiranje</label>
-            </div>
-            <div class="col-md-3 form-check">
                 <input class="form-check-input" type="checkbox" id="citac_za_kontrolu_pristupa">
                 <label class="form-check-label" for="citac_za_kontrolu_pristupa">za kontrolu pristupa</label>
             </div>
             <div class="col-md-3 form-check">
                 <input class="form-check-input" type="checkbox" id="citac_za_radno_vreme">
                 <label class="form-check-label" for="citac_za_radno_vreme">za radno vreme</label>
-            </div>
-            <div class="col-md-3 form-check">
-                <input class="form-check-input" type="checkbox" id="citac_za_evidenciju_rada_na_masinama">
-                <label class="form-check-label" for="citac_za_evidenciju_rada_na_masinama">za rad na mašinama</label>
-            </div>
-            <div class="col-md-3 form-check">
-                <input class="form-check-input" type="checkbox" id="citac_za_el_energiju">
-                <label class="form-check-label" for="citac_za_el_energiju">za električnu energiju</label>
-            </div>
-            <div class="col-md-3 form-check">
-                <input class="form-check-input" type="checkbox" id="citac_za_kontrolu_vode">
-                <label class="form-check-label" for="citac_za_kontrolu_vode">za vodu</label>
-            </div>
-            <div class="col-md-3 form-check">
-                <input class="form-check-input" type="checkbox" id="citac_za_menzu">
-                <label class="form-check-label" for="citac_za_menzu">za menzu</label>
             </div>
             <div class="col-md-3 form-check">
                 <input class="form-check-input" type="checkbox" id="citac_za_ormarice">

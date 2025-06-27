@@ -4,6 +4,8 @@
  * Ova klasa `User` upravlja korisnicima u aplikaciji.
  * Omogućava osnovne CRUD operacije nad `members` tabelom u bazi.
  * Sve metode koriste pripremljene upite, transakcije i izuzetke za sigurnost i stabilnost.
+ * @author 
+ * @version 1.0.1
  */
 
 declare(strict_types=1);
@@ -34,6 +36,7 @@ class User extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             // Priprema SQL upita
             $stmt = $this->conn->prepare("SELECT * FROM " . self::MEMBERS_TABLE . " WHERE member_id = ?");
             if (!$stmt) {
@@ -61,7 +64,8 @@ class User extends Database
             }
 
             return $result->fetch_assoc(); // Vraća jednog korisnika kao asocijativni niz
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            Logger::error("Error in User->getById method: " . $e->getMessage());
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -80,6 +84,7 @@ class User extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             $stmt = $this->conn->prepare("SELECT * FROM " . self::MEMBERS_TABLE . " WHERE username = ?");
             if (!$stmt) {
                 Logger::error("Failed to prepare statement: " . $this->conn->error);
@@ -104,11 +109,12 @@ class User extends Database
             }
 
             return $result->fetch_assoc();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            Logger::error("Error in User->getByUsername method: " . $e->getMessage());
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
-                $stmt->close();
+                $stmt->close(); // Zatvara pripremljeni upit
             }
         }
     }
@@ -122,6 +128,7 @@ class User extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             $stmt = $this->conn->prepare("SELECT * FROM " . self::MEMBERS_TABLE);
             if (!$stmt) {
                 Logger::error("Failed to prepare statement: " . $this->conn->error);
@@ -140,7 +147,8 @@ class User extends Database
             }
 
             return $result->fetch_all(MYSQLI_ASSOC); // Vraća sve redove kao niz asocijativnih nizova
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            Logger::error("Error in User->getAll method: " . $e->getMessage());
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -161,6 +169,7 @@ class User extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             $this->conn->begin_transaction(); // Pokreće transakciju
 
             // Hashuje lozinku radi bezbednosti
@@ -189,10 +198,10 @@ class User extends Database
 
             $this->conn->commit(); // Potvrđuje transakciju
             return true;
-        } catch (\Exception $e) {
-            $this->conn->rollback(); // Vraća sve ako nešto pođe po zlu
-            Logger::error($e->getMessage());
-            throw $e;
+        } catch (\Throwable $e) {
+            $this->conn->rollback();
+            Logger::error("Error in User->add method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
                 $stmt->close();
@@ -210,6 +219,7 @@ class User extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             $this->conn->begin_transaction();
 
             $stmt = $this->conn->prepare("DELETE FROM " . self::MEMBERS_TABLE . " WHERE member_id = ?");
@@ -230,9 +240,10 @@ class User extends Database
 
             $this->conn->commit();
             return true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->conn->rollback();
-            throw $e;
+            Logger::error("Error in User->delete method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
                 $stmt->close();
@@ -250,6 +261,7 @@ class User extends Database
     {
         $stmt = null;
         try {
+            $this->ensureConnection();
             $this->conn->begin_transaction();
 
             $stmt = $this->conn->prepare("UPDATE " . self::MEMBERS_TABLE . " SET username = ?, password = ?, admin = ?, aktivan = ? WHERE member_id = ?");
@@ -271,9 +283,10 @@ class User extends Database
 
             $this->conn->commit();
             return true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->conn->rollback();
-            throw $e;
+            Logger::error("Error in User->edit method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
                 $stmt->close();
@@ -282,12 +295,18 @@ class User extends Database
     }
     public function isAdmin(): bool
     {
-        if (!isset($_COOKIE['token'])) return false;
-        $token = $_COOKIE['token'];
-        $jwt = new JWT();
-        $payload = $jwt->decode($token);
-        if (!$payload || $payload['admin'] !== 1) return false;
+        try {
+            if (!isset($_COOKIE['token'])) return false;
+            $token = $_COOKIE['token'];
+            $jwt = new JWT();
+            $payload = $jwt->decode($token);
+            if (!$payload || $payload['admin'] !== 1) return false;
 
-        return true;
+            return true;
+        } catch (\Throwable $e) {
+            $this->conn->rollback();
+            Logger::error("Error in User->isAdmin method: " . $e->getMessage());
+            throw $e; // Prosleđuje izuzetak dalje
+        }
     }
 }

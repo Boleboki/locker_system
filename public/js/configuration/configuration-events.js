@@ -7,6 +7,8 @@ import { showAlert } from "../helper.js";
  * vezane za UI konfiguracije - otvaranje modala, izmena vrednosti, zatvaranje modala...
  *
  * Ne prima parametre i ne vraća vrednost.
+ * @author
+ * @version 1.0.1
  */
 export function initializeConfigurationEvents() {
   // Dohvatanje kontejnera tabele i modala iz DOM-a
@@ -72,7 +74,7 @@ export function initializeConfigurationEvents() {
         showAlert("Uspešno izmenjeno polje " + kljuc, "success");
       } catch (err) {
         // Ako dođe do greške prilikom poziva ili mreže, prikazuje alert i loguje grešku
-        showAlert("Greška pri izmeni", "danger");
+        showAlert("Greška pri izmeni: " + err, "danger");
         console.error("Greška pri izmeni:", err);
       }
     }

@@ -1,3 +1,13 @@
+/**
+ * Klasa `UserUI` je zadužena za upravljanje korisničkim interfejsom
+ * vezanim za rad sa korisnicima, kao što su prikaz modala za brisanje,
+ * prikupljanje podataka iz formi i prikaz grešaka.
+ * Sve metode su statičke i pozivaju se direktno bez instanciranja klase.
+ *
+ * @author
+ * @version 1.0.1
+ */
+
 export class UserUI {
   /**
    * Prikazuje modal za potvrdu brisanja korisnika.

@@ -1,9 +1,11 @@
-/*
+/**
  * Ova skripta sadrži pomoćne (helper) funkcije za rad sa DOM elementima i prikaz notifikacija.
  *
  * Funkcionalnosti:
  * - onClickIfExists: proverava da li element sa datim ID postoji i dodaje mu klik event listener
  * - showAlert: prikazuje Bootstrap alert poruku na stranici i automatski je uklanja nakon 3 sekunde
+ * @author
+ * @version 1.0.1
  */
 
 // Proverava da li element sa prosleđenim ID postoji u DOM-u.

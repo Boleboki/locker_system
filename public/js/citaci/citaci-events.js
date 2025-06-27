@@ -1,10 +1,12 @@
-// ====================================================================
-// OVAJ FAJL:
-// Postavlja sve događaje vezane za upravljanje čitačima:
-// dodavanje, izmena, brisanje i prikazivanje modala.
-// Koristi CitaciManager za komunikaciju sa backend-om,
-// i CitaciUI za prikazivanje/skrivanje UI komponenti.
-// ====================================================================
+/**
+ * Ovaj fajl postavlja sve događaje vezane za upravljanje čitačima:
+ * dodavanje, izmena, brisanje i prikazivanje modala.
+ * Koristi `CitaciManager` za komunikaciju sa backend-om
+ * i `CitaciUI` za prikazivanje/skrivanje UI komponenti.
+ *
+ * @author
+ * @version 1.0.1
+ */
 
 import { showAlert } from "../helper.js";
 import { CitaciManager } from "./CitaciManager.js";
@@ -110,8 +112,6 @@ export function initializeCitaciEvents() {
     try {
       // Sakupljanje podataka iz forme
       const data = CitaciUI.collectFormData();
-
-      // Slanje zahteva za ažuriranje čitača
       const response = await CitaciManager.update(row.dataset.id, data);
       if (response.success) {
         showAlert("Čitač uspešno ažuriran", "success");
