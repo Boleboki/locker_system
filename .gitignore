@@ -4,6 +4,3 @@
 
 .env
 config.php
-
-composer.lock
-composer.json
