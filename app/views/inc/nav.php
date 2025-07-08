@@ -1,6 +1,9 @@
 <?php
 
-use App\Models\User; ?>
+use App\Models\User;
+use App\Core\Lang;
+use App\Core\LangKey;
+?>
 
 <style>
   .nav-link {
@@ -40,7 +43,6 @@ use App\Models\User; ?>
     border-color: #dc3545;
   }
 
-  /* Stil za višeslojni dropdown */
   .dropdown-submenu {
     position: relative;
   }
@@ -62,7 +64,6 @@ use App\Models\User; ?>
     text-align: right;
     font-size: 0.6rem;
     margin: 0;
-    ;
   }
 </style>
 
@@ -81,40 +82,83 @@ use App\Models\User; ?>
         <?php if ((new User)->isAdmin()): ?>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-              Administracija
+              <?= Lang::get('nav.admin') ?>
             </a>
             <ul class="dropdown-menu">
               <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="<?= url('/users') ?>">Korisnici</a>
+                <a class="dropdown-item dropdown-toggle" href="<?= url('/users') ?>">
+                  <?= Lang::get('nav.users') ?>
+                </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="<?= url('/users') ?>">Lista korisnika</a></li>
-                  <li><a class="dropdown-item" href="<?= url('/users/create') ?>">Dodaj novog korisnika</a></li>
+                  <li>
+                    <a class="dropdown-item" href="<?= url('/users') ?>">
+                      <?= Lang::get('nav.users_list') ?>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="<?= url('/users/create') ?>">
+                      <?= Lang::get('nav.users_create') ?>
+                    </a>
+                  </li>
                 </ul>
               </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <?= Lang::get('nav.settings') ?>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="<?= url('/podesavanja') ?>">
+                  <?= Lang::get('nav.settings_general') ?>
+                </a>
+              </li>
               <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="<?= url('/podesavanja') ?>">Podešavanja</a>
+                <a class="dropdown-item dropdown-toggle" href="<?= url('/citaci') ?>">
+                  <?= Lang::get('nav.settings_scanners') ?>
+                </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="<?= url('/podesavanja') ?>">Podešavanja programa</a></li>
-                  <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle" href="<?= url('/citaci') ?>">Podešavanja čitača</a>
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="<?= url('/citaci') ?>">Lista čitača</a></li>
-                      <li><a class="dropdown-item" href="<?= url('/citaci/create') ?>">Dodaj novi čitač</a></li>
-                    </ul>
+                  <li>
+                    <a class="dropdown-item" href="<?= url('/citaci') ?>">
+                      <?= Lang::get('nav.scanners_list') ?>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="<?= url('/citaci/create') ?>">
+                      <?= Lang::get('nav.scanners_create') ?>
+                    </a>
                   </li>
                 </ul>
               </li>
 
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#">
+                  <?= Lang::get('nav.language') ?>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item lang-select" href="#" data-lang="sr"><?= Lang::get('nav.languages.sr') ?></a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item lang-select" href="#" data-lang="en"><?= Lang::get('nav.languages.en') ?></a>
+                  </li>
+                </ul>
+              </li>
 
             </ul>
           </li>
         <?php endif; ?>
-
       </ul>
-      <button class="btn btn-outline-light" type="button" id="logoutBtn">Logout</button>
+
+      <button class="btn btn-outline-light" type="button" id="logoutBtn">
+        <?= Lang::get('nav.logout') ?>
+      </button>
     </div>
   </div>
 </nav>
+
 
 <script>
   fetch("<?= BASE_URL ?>/version.json")

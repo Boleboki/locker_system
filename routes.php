@@ -18,6 +18,7 @@ Router::post("/users", "UserController@store")->only(Admin::class);
 Router::delete("/users/{id}", "UserController@delete")->only(Admin::class);
 Router::get('/users/{id}/edit', 'UserController@edit')->only(Admin::class);
 Router::put('/users/{id}', 'UserController@update')->only(Admin::class);
+Router::patch('/users/{id}', 'UserController@updatePassword')->only(Admin::class);
 
 Router::get("/test", "PageController@test")->only(Auth::class);
 
@@ -25,6 +26,7 @@ Router::get("/podesavanja", "ConfigurationController@index")->only(Admin::class)
 Router::put("/podesavanja/{key}", "ConfigurationController@update")->only(Admin::class);
 
 Router::get("/citaci", "CitaciController@index")->only(Admin::class);
+Router::get("/api/citaci", "CitaciController@getAll")->only(Admin::class);
 Router::get("/citaci/create", "CitaciController@create")->only(Admin::class);
 Router::post("/citaci", "CitaciController@store")->only(Admin::class);
 Router::delete("/citaci/{id}", "CitaciController@delete")->only(Admin::class);

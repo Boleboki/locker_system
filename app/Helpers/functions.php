@@ -44,6 +44,7 @@ function view($path, $attributes = [])
 
 function redirect($path)
 {
+    $path = url($path);
     header("Location: {$path}");
     exit();
 }

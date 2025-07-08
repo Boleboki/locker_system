@@ -15,11 +15,21 @@ namespace App\Core;
  */
 class Logger
 {
+
     /**
      * Putanja do direktorijuma za log fajlove
      * @var string
      */
     protected static string $logDir = __DIR__ . '/../../storage/logs';
+
+    // Dodaj statičku promenljivu za jezik log poruka
+    protected static string $logLocale = LOG_LANGUAGE;
+
+    // Metoda za podešavanje jezika logova
+    public static function setLocale(string $locale): void
+    {
+        self::$logLocale = $locale;
+    }
 
     /**
      * Snima poruku u log fajl sa pripadajućim nivoom (INFO, ERROR, ...)
@@ -70,7 +80,19 @@ class Logger
             }
         }
     }
-
+    /**
+     * Prevodi poruku na trenutno podešeni jezik logova
+     * 
+     * @param string $message - ključ ili tekst poruke koja treba da se prevede
+     * @param array $replace - niz vrednosti koje se ubacuju u mesta oznaka unutar poruke (opciono)
+     * @return string - prevedena poruka spremna za logovanje
+     * 
+     * Koristi Lang::get metodu za prevođenje, bazirano na jeziku definisanom u $logLocale.
+     */
+    static function translate(string $message, array $replace = []): string
+    {
+        return Lang::get($message, $replace, self::$logLocale);
+    }
     /**
      * Loguje informativnu poruku (INFO nivo)
      * 

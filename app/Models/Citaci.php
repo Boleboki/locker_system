@@ -26,38 +26,120 @@ class Citaci extends Database
     }
 
     /**
-     * Dohvata sve čitače iz baze
-     * @return array - niz svih redova iz tabele 'citaci'
+     * Lista svih kolona (ključeva) koje se koriste u tabeli 'citaci'
+     * 
+     * Koristi se za:
+     * - validaciju podataka prilikom unosa i ažuriranja (provera da li svi ključni elementi postoje)
+     * - definisanje dozvoljenih kolona za sortiranje
      */
-    public function getAll(): array
+    private static array $tableKeys = [
+        'id_citaca',
+        'opis_citaca',
+        'tip_citaca',
+        'aktivan',
+        'citac_za_radno_vreme',
+        'citac_za_kontrolu_pristupa',
+        'citac_za_ormarice',
+        'citac_za_grupu_ormarica',
+        'citac_za_odjavu',
+        'delay',
+        'delay_senzora',
+        'sn_citaca',
+        'sn_barijere',
+        'broj_ormarica',
+        'broj_redova_ormarica',
+        'brojevi_ormarica_po_indexu',
+        'ip_address'
+    ];
+
+    /**
+     * Pomoćna metoda za generisanje SQL naredbe za sortiranje rezultata
+     * 
+     * @param string|null $sort - Kolona po kojoj se sortira (mora biti u listi dozvoljenih kolona)
+     * @param string|null $direction - Smer sortiranja: 'asc' ili 'desc'
+     * 
+     * @return string - Deo SQL upita za sortiranje (npr. "ORDER BY opis_citaca asc") ili prazan string ako nema sortiranja
+     * 
+     * Ako se traženo polje ne nalazi u listi dozvoljenih kolona ($tableKeys), koristi se podrazumevano prvo polje.
+     * Ako je smer neispravan, koristi se 'asc' kao podrazumevani.
+     */
+    protected function sortQuery(?string $sort = null, ?string $direction = null): string
+    {
+        if (empty($sort)) return "";
+        $allowedDirs = ['asc', 'desc'];
+
+        $sort = !in_array($sort, self::$tableKeys) ? self::$tableKeys[0] : $sort;
+
+        $direction = strtolower($direction);
+        $direction = !in_array($direction, $allowedDirs) ? $allowedDirs[0] : $direction;
+        return " ORDER BY " . $sort . " " . $direction;
+    }
+    /**
+     * Dohvata sve čitače iz baze uz opciono sortiranje i pretragu
+     * 
+     * @param string|null $sort - Naziv kolone po kojoj se sortira (mora biti u listi dozvoljenih)
+     * @param string|null $direction - Smer sortiranja ('asc' ili 'desc')
+     * @param string|null $search - Tekst za pretragu (pretražuje se opis_citaca i sn_citaca)
+     * 
+     * @return array - Niz svih redova iz tabele 'citaci', kao asocijativni nizovi
+     */
+    public function getAll(?string $sort = null, ?string $direction = null, ?string $search = null): array
     {
         $stmt = null;
         try {
             $this->ensureConnection();
-            $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NAME);
+
+            $sortPart = $this->sortQuery($sort, $direction);
+            $params = [];
+            $paramTypes = '';
+            $whereClause = '';
+
+            // Lista dozvoljenih polja za pretragu
+            $searchableFields = [
+                'id_citaca',
+                'opis_citaca',
+                'sn_citaca',
+                'sn_barijere',
+                'ip_address'
+            ];
+
+            if (!empty($search)) {
+                $conditions = [];
+                foreach ($searchableFields as $field) {
+                    $conditions[] = "$field LIKE ?";
+                    $params[] = '%' . $search . '%';
+                    $paramTypes .= 's';
+                }
+                $whereClause = ' WHERE ' . implode(' OR ', $conditions);
+            }
+
+            $sql = "SELECT * FROM " . self::TABLE_NAME . $whereClause . $sortPart;
+
+            $stmt = $this->conn->prepare($sql);
             if (!$stmt) {
-                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
+            if (!empty($params)) {
+                $stmt->bind_param($paramTypes, ...$params);
+            }
+
             if (!$stmt->execute()) {
-                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
             $result = $stmt->get_result();
             if (!$result) {
-                Logger::error("Failed to get result: " . $stmt->error);
                 throw new \Exception("Failed to get result: " . $stmt->error);
             }
 
             return $result->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $e) {
-            Logger::error("Error in Citaci->getAll method: " . $e->getMessage());
-            throw $e; // Prosleđuje izuzetak dalje
+            Logger::error(Logger::translate("logs.citaci.error_get_all", ['error' => $e->getMessage()]));
+            throw $e;
         } finally {
             if ($stmt) {
-                $stmt->close(); // Zatvara pripremljeni upit
+                $stmt->close();
             }
         }
     }
@@ -75,29 +157,25 @@ class Citaci extends Database
 
             $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE id_citaca = ?");
             if (!$stmt) {
-                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             if (!$stmt->bind_param("i", $id)) {
-                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
-                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
             $result = $stmt->get_result();
             if (!$result) {
-                Logger::error("Failed to get result: " . $stmt->error);
                 throw new \Exception("Failed to get result: " . $stmt->error);
             }
 
             return $result->fetch_assoc() ?: null; // Vraća asocijativni niz ili null ako nije pronađeno
         } catch (\Throwable $e) {
-            Logger::error("Error in Citaci->getById method: " . $e->getMessage());
+            Logger::error(Logger::translate("logs.citaci.error_get_by_id", ['id' => $id, 'error' => $stmt->error]));
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -107,10 +185,9 @@ class Citaci extends Database
     }
 
     /**
-     * Ubacuje novog čitača u bazu
+     * Ubacuje novi čitač u bazu
      * @param array $data - Asocijativni niz sa podacima o čitaču
      * @return bool - True ako je unos uspešan
-     * @throws \Exception - Ako dođe do greške u pripremi, bindovanju ili izvršavanju
      */
     public function create(array $data): bool
     {
@@ -137,44 +214,26 @@ class Citaci extends Database
             broj_redova_ormarica,
             brojevi_ormarica,
             aktivan,
-            brojevi_ormarica_po_indexu
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            brojevi_ormarica_po_indexu,
+            ip_address
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $this->conn->prepare($sql);
             if (!$stmt) {
-                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Provera da li su svi potrebni ključevi u $data
-            $requiredKeys = [
-                'id_citaca',
-                'opis_citaca',
-                'tip_citaca',
-                'citac_za_radno_vreme',
-                'citac_za_kontrolu_pristupa',
-                'citac_za_ormarice',
-                'citac_za_grupu_ormarica',
-                'citac_za_odjavu',
-                'delay',
-                'sn_citaca',
-                'sn_barijere',
-                'delay_senzora',
-                'broj_ormarica',
-                'broj_redova_ormarica',
-                'brojevi_ormarica',
-                'aktivan',
-                'brojevi_ormarica_po_indexu'
-            ];
-            foreach ($requiredKeys as $key) {
+
+            foreach (self::$tableKeys as $key) {
                 if (!array_key_exists($key, $data)) {
-                    Logger::error("Missing required data field: $key");
+                    Logger::error(Logger::translate("logs.citaci.missing_field", ['field' => $key]));
                     throw new \Exception("Missing required data field: $key");
                 }
             }
 
             $bind = $stmt->bind_param(
-                "isssssssiisiiisii",
+                "isssssssiisiiisiis",
                 $data['id_citaca'],
                 $data['opis_citaca'],
                 $data['tip_citaca'],
@@ -191,16 +250,15 @@ class Citaci extends Database
                 $data['broj_redova_ormarica'],
                 $data['brojevi_ormarica'],
                 $data['aktivan'],
-                $data['brojevi_ormarica_po_indexu']
+                $data['brojevi_ormarica_po_indexu'],
+                $data['ip_address']
             );
 
             if (!$bind) {
-                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
-                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
@@ -209,7 +267,7 @@ class Citaci extends Database
             return true;
         } catch (\Throwable $e) {
             $this->conn->rollback();
-            Logger::error("Error in Citaci->create method: " . $e->getMessage());
+            Logger::error(Logger::translate("logs.citaci.error_create", ['error' => $e->getMessage()]));
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -219,7 +277,7 @@ class Citaci extends Database
     }
 
     /**
-     * Ažurira postojećeg čitača u bazi
+     * Ažurira postojeći čitač u bazi
      * @param int $id - ID čitača koji se ažurira
      * @param array $data - Podaci koji treba da se ažuriraju
      * @return bool - True ako je uspešno ažurirano
@@ -249,43 +307,24 @@ class Citaci extends Database
             broj_redova_ormarica = ?,
             brojevi_ormarica = ?,
             aktivan = ?,
-            brojevi_ormarica_po_indexu = ?
+            brojevi_ormarica_po_indexu = ?,
+            ip_address = ?
         WHERE id_citaca = ?";
 
             $stmt = $this->conn->prepare($sql);
             if (!$stmt) {
-                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
-            $requiredKeys = [
-                'id_citaca',
-                'opis_citaca',
-                'tip_citaca',
-                'citac_za_radno_vreme',
-                'citac_za_kontrolu_pristupa',
-                'citac_za_ormarice',
-                'citac_za_grupu_ormarica',
-                'citac_za_odjavu',
-                'delay',
-                'sn_citaca',
-                'sn_barijere',
-                'delay_senzora',
-                'broj_ormarica',
-                'broj_redova_ormarica',
-                'brojevi_ormarica',
-                'aktivan',
-                'brojevi_ormarica_po_indexu'
-            ];
-            foreach ($requiredKeys as $key) {
+            foreach (self::$tableKeys as $key) {
                 if (!array_key_exists($key, $data)) {
-                    Logger::error("Missing required data field: $key");
+                    Logger::error(Logger::translate("logs.citaci.missing_field", ['field' => $key]));
                     throw new \Exception("Missing required data field: $key");
                 }
             }
 
             if (!$stmt->bind_param(
-                "isssssssiisiiisiii",
+                "isssssssiisiiisiisi",
                 $data["id_citaca"],
                 $data['opis_citaca'],
                 $data['tip_citaca'],
@@ -303,14 +342,13 @@ class Citaci extends Database
                 $data['brojevi_ormarica'],
                 $data['aktivan'],
                 $data['brojevi_ormarica_po_indexu'],
+                $data['ip_address'],
                 $id
             )) {
-                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
-                Logger::error("Failed to execute update statement: " . $stmt->error);
                 throw new \Exception("Failed to execute update statement: " . $stmt->error);
             }
 
@@ -318,7 +356,7 @@ class Citaci extends Database
             return true;
         } catch (\Throwable $e) {
             $this->conn->rollback();
-            Logger::error("Error in Citaci->update method: " . $e->getMessage());
+            Logger::error(Logger::translate("logs.citaci.error_update", ['id' => $id, 'error' => $e->getMessage()]));
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -328,7 +366,7 @@ class Citaci extends Database
     }
 
     /**
-     * Briše čitača iz baze na osnovu ID-ja
+     * Briše čitač iz baze na osnovu ID-ja
      * @param int $id - ID čitača koji se briše
      * @return bool - True ako je uspešno obrisano
      */
@@ -343,17 +381,14 @@ class Citaci extends Database
             $sql = "DELETE FROM " . self::TABLE_NAME . " WHERE id_citaca = ?";
             $stmt = $this->conn->prepare($sql);
             if (!$stmt) {
-                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             if (!$stmt->bind_param("i", $id)) {
-                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
-                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
@@ -361,7 +396,7 @@ class Citaci extends Database
             return true;
         } catch (\Throwable $e) {
             $this->conn->rollback();
-            Logger::error("Error in Citaci->delete method: " . $e->getMessage());
+            Logger::error(Logger::translate("logs.citaci.error_delete", ['id' => $id, 'error' => $e->getMessage()]));
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {

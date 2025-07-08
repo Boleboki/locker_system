@@ -40,7 +40,7 @@ export class AuthManager {
       return await response.json();
     } catch (err) {
       // Logovanje greške i propagacija dalje
-      console.error("Greška prilikom logovanja: ", err);
+      console.error("Error logging in: ", err);
       throw err;
     }
   }
@@ -71,7 +71,7 @@ export class AuthManager {
       return await response.json();
     } catch (err) {
       // Logovanje greške prilikom logout-a
-      console.log("Greška prilikom logout-a: ", err);
+      console.log("Error logout: ", err);
       throw err;
     }
   }

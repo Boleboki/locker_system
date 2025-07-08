@@ -16,18 +16,18 @@ export function initializeUserEvents() {
   const deleteUserModal = document.querySelector("#deleteUserModal");
   const editUserForm = document.querySelector("#editUserForm");
   const userCreateForm = document.querySelector("#userCreateForm");
+  const resetPasswordModal = document.querySelector("#resetPasswordModal");
   let row = null;
 
   // Klik na dugmad unutar tabele korisnika (npr. dugme za brisanje)
   usersTable?.addEventListener("click", async (e) => {
     row = e.target.closest("tbody tr"); // pronalazi red u tabeli
     if (!row) return;
-
     const userId = row.dataset.id,
       userUsername = row.dataset.username;
 
     // Ako je kliknuto na dugme za brisanje korisnika
-    if (e.target.id === "delete-btn") {
+    if (e.target.closest("#delete-btn")) {
       if (!userId || !userUsername) return;
 
       // Prikazuje modal za potvrdu brisanja korisnika
@@ -58,38 +58,44 @@ export function initializeUserEvents() {
         showAlert(response.error, "danger");
       }
     } catch (err) {
-      showAlert("Greška prilikom brisanja korisnika: " + err, "danger");
-      console.error("Greška prilikom brisanja korisnika:", e);
+      showAlert("Error deleting user: " + err, "danger");
+      console.error("Error deleting user: ", e);
     }
   });
 
   // Klik na dugme za izmenu korisnika u formi
   editUserForm?.addEventListener("click", async (e) => {
-    if (e.target.id === "editUserBtn") {
-      try {
-        const userId = e.target.dataset.id;
-        // Prikuplja podatke iz forme
-        const data = UserUI.collectData();
-        console.log(data);
-        // Šalje zahtev za izmenu korisnika
-        const response = await UserManager.edit(userId, data);
-        console.log(response);
+    if (e.target.id !== "editUserBtn") return;
 
-        if (!response.success) {
-          // Prikaz grešaka ako izmena nije uspela
-          const messages = Array.isArray(response.error)
-            ? response.error
-            : [response.error || "Došlo je do greške"];
-          UserUI.displayError(messages);
+    try {
+      const userId = e.target.dataset.id;
+      // Prikuplja podatke iz forme
+      const data = UserUI.collectData();
+      delete data.password;
+      // Šalje zahtev za izmenu korisnika
+      const response = await UserManager.edit(userId, data);
+
+      UserUI.removeErrors();
+
+      if (!response.success) {
+        if (response.error) {
+          showAlert(response.error, "danger");
           return;
         }
-
-        // Prikaz uspešne poruke
-        showAlert(response.message, "success");
-      } catch (e) {
-        showAlert("Greška u izmeni korisnika: " + e, "danger");
-        console.log("Greška prilikom izmene korisnika:", e);
+        for (const [field, messages] of Object.entries(response.errors)) {
+          const errorField = document
+            .getElementById(field)
+            ?.closest("div")
+            ?.querySelector(".error-message");
+          UserUI.displayError(errorField, messages);
+        }
+        return;
       }
+      // Prikaz uspešne poruke
+      showAlert(response.message, "success");
+    } catch (e) {
+      showAlert("Error editing user: " + e, "danger");
+      console.log("Error editing user: ", e);
     }
   });
 
@@ -101,22 +107,60 @@ export function initializeUserEvents() {
         const data = UserUI.collectData();
         // Slanje zahteva za dodavanje korisnika
         const response = await UserManager.add(data);
-
+        UserUI.removeErrors();
         if (!response.success) {
-          // Prikaz grešaka ako dodavanje nije uspelo
-          const messages = Array.isArray(response.error)
-            ? response.error
-            : [response.error || "Došlo je do greške"];
-          UserUI.displayError(messages);
+          if (response.error) {
+            showAlert(response.error, "danger");
+            return;
+          }
+          for (const [field, messages] of Object.entries(response.errors)) {
+            const errorField = document
+              .getElementById(field)
+              ?.closest("div")
+              ?.querySelector(".error-message");
+
+            UserUI.displayError(errorField, messages);
+          }
           return;
         }
-
-        // Prikaz uspešne poruke
         showAlert(response.message, "success");
       } catch (e) {
-        console.error("Greška prilikom dodavanja korisnika:", e);
-        showAlert("Greška u dodavanju korisnika: " + e, "danger");
+        showAlert("Error adding user: " + e, "danger");
+        console.error("Error adding user: ", e);
       }
+    }
+  });
+
+  resetPasswordModal?.addEventListener("click", async (e) => {
+    if (e.target.id !== "confirmResetBtn" || !e.target.dataset.id) return;
+    try {
+      const data = UserUI.collectPasswordReset();
+      const response = await UserManager.updatePassword(
+        e.target.dataset.id,
+        data
+      );
+      UserUI.removeErrors();
+      if (!response.success) {
+        if (response.error) {
+          showAlert(response.error, "danger");
+          return;
+        }
+        for (const [field, messages] of Object.entries(response.errors)) {
+          const errorField = document
+            .getElementById(field)
+            ?.closest("div")
+            ?.querySelector(".error-message");
+
+          UserUI.displayError(errorField, messages);
+        }
+        return;
+      }
+      UserUI.clearPasswordEditForm();
+      UserUI.closeResetPasswordModal();
+      showAlert(response.message, "success");
+    } catch (err) {
+      showAlert("Error updating password: " + e, "danger");
+      console.error("Error updating password:", err);
     }
   });
 }

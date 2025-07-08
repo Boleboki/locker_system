@@ -33,7 +33,7 @@ export class CitaciManager {
       }
       return await response.json(); // Parsiranje i vraćanje JSON odgovora
     } catch (error) {
-      console.error("Error fetching data by ID:", error);
+      console.error("Error fetching reader by ID:", error);
       throw error;
     }
   }
@@ -41,20 +41,36 @@ export class CitaciManager {
   /**
    * Dohvata sve čitače sa servera.
    *
+   * @param {string} sortField - Polje po kojem se sortira.
+   * @param {string} sortDirection - Smer sortiranja ("asc" ili "desc").
+   * @param {string} search - Tekst za pretragu.
    * @returns {Promise<Object[]>} - Niz čitača u JSON formatu
    */
-  static async getAll() {
+  static async getAll(sortField = "", sortDirection = "asc", search = "") {
     try {
-      // Slanje GET zahteva za sve čitače
-      const response = await fetch(url(`/api/citaci`));
-      if (!response.ok) {
-        const errorText = await response.text(); // Greška ako status nije OK
-        console.error("Server error text:", errorText);
-        throw new Error("Server error text: " + errorText);
+      const params = new URLSearchParams();
+
+      // Dodaj sort parametre samo ako su definisani
+      if (sortField) {
+        params.append("sort", sortField);
+        params.append("direction", sortDirection);
       }
-      return await response.json(); // Vraćanje niza čitača
+
+      // Dodaj search parametar samo ako nije prazan
+      if (search.trim() !== "") {
+        params.append("search", search.trim());
+      }
+
+      const query = params.toString() ? `?${params.toString()}` : "";
+
+      const response = await fetch(url(`/api/citaci${query}`));
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error("Server error: " + errorText);
+      }
+      return await response.json();
     } catch (error) {
-      console.error("Error fetching data by ID:", error); // Napomena: poruka može biti zbunjujuća jer se odnosi na sve
+      console.error("Error fetching readers:", error);
       throw error;
     }
   }
@@ -83,7 +99,7 @@ export class CitaciManager {
 
       return await response.json(); // Vraćanje kreiranog objekta sa servera
     } catch (error) {
-      console.error("Error adding data:", error);
+      console.error("Error adding reader:", error);
       throw error;
     }
   }
@@ -113,7 +129,7 @@ export class CitaciManager {
 
       return await response.json(); // Vraćanje ažuriranih podataka
     } catch (error) {
-      console.error("Error updating data:", error);
+      console.error("Error updating reader:", error);
       throw error;
     }
   }
@@ -141,7 +157,7 @@ export class CitaciManager {
 
       return await response.json(); // Povratna informacija o brisanju
     } catch (error) {
-      console.error("Error deleting data:", error);
+      console.error("Error deleting reader:", error);
       throw error;
     }
   }

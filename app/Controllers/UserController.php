@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\Lang;
 use App\Core\Logger;
 use App\Core\Validator;
 use App\Models\User;
 use Exception;
+use Respect\Validation\Validator as v;
 
 /**
  * Kontroler za upravljanje korisnicima.
@@ -42,6 +44,7 @@ class UserController
                 "users" => $this->user->getAll()
             ]);
         } catch (\Throwable $e) {
+            Logger::error(Logger::translate("logs.users.error_show_index", ["error" => $e->getMessage()]));
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
@@ -56,10 +59,32 @@ class UserController
         try {
             return view("users/create.view.php");
         } catch (\Throwable $e) {
+            Logger::error(Logger::translate("logs.users.error_show_create", ["error" => $e->getMessage()]));
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
     }
+    /**
+     * Parsira JSON podatke iz HTTP tela zahteva
+     * 
+     * @return array|null - Vraća podatke kao asocijativni niz ako su validni, u suprotnom baca izuzetak
+     * 
+     * Čita raw JSON iz ulaza (`php://input`) i dekodira ga.
+     * Ako JSON nije validan ili nije niz, loguje upozorenje i baca izuzetak sa prevedenom porukom.
+     */
+    private function data(): ?array
+    {
+        $raw = file_get_contents("php://input");
+        $data = json_decode($raw, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
+            Logger::warning(Logger::translate("logs.general.invalid_data"));
+            throw new Exception(Lang::get("logs.general.invalid_data"));
+        }
+
+        return $data;
+    }
+
 
     /**
      * Obrada POST zahteva za dodavanje novog korisnika.
@@ -68,58 +93,52 @@ class UserController
     public function store(): void
     {
         try {
-            $rawInput = file_get_contents("php://input");
-            $data = json_decode($rawInput, true);
+            $data = $this->data();
+
+            $username = $data['username'] ?? '';
+
 
             $validator = new Validator();
-
-            $username = $validator->validateUsername($data['username'] ?? '');
-            $password = $validator->validatePassword($data['password'] ?? '');
+            if ($this->user->getByUsername($username)) {
+                $validator->addError("username", Lang::get("validator.username.exists"));
+            }
+            $validator->validate($data, [
+                'username' => v::notEmpty()->addRule($validator->noSpecialChars())->addRule(v::length(3, 20)),
+                'password' => v::notEmpty()->addRule($validator->noSpecialChars())->addRule(v::length(3, 20))
+            ]);
 
             if ($validator->hasErrors()) {
-                // Vraća greške kao JSON odgovor
+                Logger::warning(Logger::translate("logs.users.validation_failed", ['username' => $username, 'errors' => json_encode($validator->getErrors())]));
                 echo json_encode([
                     'success' => false,
-                    'error' => $validator->getErrors()
+                    'errors' => $validator->getErrors()
                 ]);
                 return;
             }
 
-            // Provera da li korisnik već postoji u bazi
             if ($this->user->getByUsername($username)) {
-                Logger::error("Pokušaj dodavanja već postojećeg korisnika: {$username}");
+                Logger::warning(Logger::translate("logs.users.exists", ["username" => $username]));
                 echo json_encode([
                     "success" => false,
-                    "error" => "Korisnik već postoji"
-                ]);
-                return;
-            }
-            $data = [
-                'username' => $username,
-                'password' => $password,
-                'admin' => $data['admin'],
-                'aktivan' => $data['aktivan']
-            ];
-            // Dodavanje korisnika u bazu
-            if (!$this->user->add($data)) {
-                Logger::error("Greška prilikom dodavanja korisnika: {$username}");
-                echo json_encode([
-                    "success" => false,
-                    "error" => "Korisnik nije dodat"
+                    "error" => Lang::get("responses.users.exists")
                 ]);
                 return;
             }
 
-            Logger::info("Korisnik {$username} uspešno dodat");
+            $this->user->add($data);
+
+            Logger::info(Logger::translate("logs.users.create_success", ["username" => $username]));
             echo json_encode([
                 "success" => true,
-                "message" => "Korisnik uspešno dodat"
+                "message" => Lang::get("responses.users.create_success")
             ]);
         } catch (\Throwable $e) {
+            Logger::error(Logger::translate("logs.users.error_add", ["error" => $e->getMessage()]));
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
     }
+
 
     /**
      * Briše korisnika po ID-u.
@@ -132,31 +151,25 @@ class UserController
             $user = $this->user->getById($id);
             $username = $user['username'] ?? '';
 
-            if (!$username) {
+            if (!$user) {
+                Logger::warning(Logger::translate("logs.users.not_found", ["id" => $id]));
                 http_response_code(404);
                 echo json_encode([
                     "success" => false,
-                    "error" => "Korisnik nije pronađen"
+                    "error" => Lang::get("responses.users.not_found")
                 ]);
                 return;
             }
 
-            if (!$this->user->delete($id)) {
-                Logger::error("Neuspešno brisanje korisnika {$username}");
-                http_response_code(500);
-                echo json_encode([
-                    "success" => false,
-                    "error" => "Brisanje korisnika nije uspelo"
-                ]);
-                return;
-            }
+            $this->user->delete($id);
 
-            Logger::info("Korisnik {$username} uspešno obrisan");
+            Logger::info(Logger::translate("logs.users.delete_success", ["username" => $username]));
             echo json_encode([
                 "success" => true,
-                "message" => "Korisnik je obrisan"
+                "message" => Lang::get("responses.users.delete_success")
             ]);
         } catch (\Throwable $e) {
+            Logger::error(Logger::translate("logs.users.error_delete", ["id" => $id, "error" => $e->getMessage()]));
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
@@ -173,19 +186,20 @@ class UserController
             $user = $this->user->getById($id);
 
             if (!$user) {
-                Logger::error("Pokušaj izmene nepostojećeg korisnika sa ID: {$id}");
-                header("Location: /users");
-                exit;
+                Logger::warning(Logger::translate("logs.users.not_found", ["id" => $id]));
+                redirect("/users");
             }
 
             return view("users/edit.view.php", [
                 "user" => $user
             ]);
         } catch (\Throwable $e) {
+            Logger::error(Logger::translate("logs.users.error_edit", ["id" => $id, "error" => $e->getMessage()]));
             http_response_code(500);
             echo json_encode($e->getMessage());
         }
     }
+
 
     /**
      * Ažurira korisnika na osnovu ID-a.
@@ -195,65 +209,83 @@ class UserController
     public function update(int $id): void
     {
         try {
-            $input = json_decode(file_get_contents("php://input"), true);
+            $data = $this->data();
 
-            if (!$input || !isset($input["username"], $input["admin"])) {
-                echo json_encode([
-                    'success' => false,
-                    'error' => 'Neispravan unos podataka.'
-                ]);
-                return;
-            }
+            $username = $data["username"] ?? '';
+
+            $existingUser = $this->user->getByUsername($username);
 
             $validator = new Validator();
 
-            $username = $validator->validateUsername($input['username']) ?? '';
-            $password = $input['password'] ?? '';
-
-            if (!empty($password)) {
-                $password = $validator->validatePassword($password) ?? '';
-            }
-
-            $currentUser = $this->user->getById($id);
-            $existingUser = $this->user->getByUsername($username);
-
-            // Provera da li korisničko ime već postoji i nije trenutni korisnik
             if ($existingUser && (int)$existingUser["member_id"] !== $id) {
-                $validator->addError("Korisničko ime već postoji.");
+                $validator->addError("username", Lang::get("validator.username.exists"));
             }
+
+            $validator->validate($data, [
+                'username' => v::notEmpty()->addRule($validator->noSpecialChars())->addRule(v::length(3, 20)),
+            ]);
 
             if ($validator->hasErrors()) {
+                Logger::warning(Logger::translate("logs.users.validation_failed", ['username' => $username, 'errors' => json_encode($validator->getErrors())]));
                 echo json_encode([
                     'success' => false,
-                    'error' => $validator->getErrors()
+                    'errors' => $validator->getErrors()
                 ]);
                 return;
             }
 
-            // Ako nova lozinka nije prosleđena, koristi postojeću iz baze
-            $passwordHash = !empty($password) ? password_hash($password, PASSWORD_DEFAULT) : $currentUser["password"];
-            $data = [
-                'username' => $username,
-                'password' => $passwordHash,
-                'admin'  => $input["admin"],
-                'aktivan' => $input["aktivan"]
-            ];
-            $result = $this->user->edit($id, $data);
+            $this->user->edit($id, $data);
 
-            if ($result) {
-                Logger::info("Korisnik {$username} uspešno izmenjen");
-                echo json_encode([
-                    "success" => true,
-                    "message" => "Korisnik uspešno izmenjen"
-                ]);
-            } else {
-                Logger::error("Neuspešna izmena korisnika {$username}");
-                echo json_encode([
-                    "success" => false,
-                    "error" => "Korisnik nije izmenjen"
-                ]);
-            }
+            Logger::info(Logger::translate("logs.users.update_success", ["username" => $username]));
+            echo json_encode([
+                "success" => true,
+                "message" => Lang::get("responses.users.update_success")
+            ]);
         } catch (\Throwable $e) {
+            Logger::error(Logger::translate("logs.users.error_update", ["id" => $id, "error" => $e->getMessage()]));
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
+    }
+
+    /**
+     * Ažurira korisničku lozinku na osnovu ID-a.
+     *
+     * @param int $id ID korisnika
+     */
+    public function updatePassword(int $id)
+    {
+        try {
+
+            $data = $this->data();
+
+            $username = $this->user->getById($id)['username'] ?? '';
+
+            $validator = new Validator();
+
+            $validator->validate($data, [
+                'new_password' => v::notEmpty()->addRule($validator->noSpecialChars())->addRule(v::length(3, 20)),
+                'confirm_password' => v::equals($data["new_password"])->setTemplate(Lang::get("validator.password.equals")),
+            ]);
+
+            if ($validator->hasErrors()) {
+                Logger::warning(Logger::translate("logs.users.validation_failed", ['username' => $username, 'errors' => json_encode($validator->getErrors())]));
+                echo json_encode([
+                    'success' => false,
+                    'errors' => $validator->getErrors()
+                ]);
+                return;
+            }
+
+            $this->user->editPassword($id, $data["new_password"]);
+
+            Logger::info(Logger::translate("logs.users.update_success", ["username" => $username]));
+            echo json_encode([
+                "success" => true,
+                "message" => Lang::get("responses.users.update_success")
+            ]);
+        } catch (\Throwable $e) {
+            Logger::error(Logger::translate("logs.users.error_update", ["id" => $id, "error" => $e->getMessage()]));
             http_response_code(500);
             echo json_encode($e->getMessage());
         }

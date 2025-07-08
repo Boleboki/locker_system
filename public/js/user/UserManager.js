@@ -31,7 +31,7 @@ export class UserManager {
       // Parsiranje i vraćanje JSON odgovora
       return await response.json();
     } catch (err) {
-      console.error("Greška prilikom dodavanja korisnika:", err);
+      console.error("Error adding user:", err);
       throw err; // Prosleđivanje greške višem sloju
     }
   }
@@ -60,8 +60,37 @@ export class UserManager {
       // Parsiranje i vraćanje JSON odgovora
       return await response.json();
     } catch (err) {
-      console.error("Greška prilikom izmene korisnika:", err);
+      console.error("Error editing user: ", err);
       throw err; // Prosleđivanje greške višem sloju
+    }
+  }
+
+  /**
+   * Ažurira lozinku korisnika slanjem PATCH zahteva na server.
+   *
+   * @param {string} userId - ID korisnika čija se lozinka menja
+   * @param {object} data - objekat sa novom lozinkom (npr. { password: "novaLozinka" })
+   * @returns {Promise<object>} - odgovor servera u JSON formatu
+   *
+   * Koristi HTTP PATCH metod jer se menja samo deo korisničkih podataka (lozinka).
+   * U slučaju greške, loguje poruku i baca izuzetak sa porukom servera.
+   */
+  static async updatePassword(userId, data) {
+    try {
+      const response = await fetch(url(`/users/${userId}`), {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server error text:", errorText);
+        throw new Error("Server error text: " + errorText);
+      }
+      return await response.json();
+    } catch (err) {
+      console.error("Error updating password: ", err);
+      throw err;
     }
   }
 
@@ -87,7 +116,7 @@ export class UserManager {
       // Parsiranje i vraćanje odgovora
       return await response.json();
     } catch (err) {
-      console.error("Greška prilikom brisanja korisnika:", err);
+      console.error("Error deleting user: ", err);
       throw err; // Prosleđivanje greške višem sloju
     }
   }

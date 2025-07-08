@@ -31,6 +31,7 @@ export class CitaciUI {
       data.broj_redova_ormarica || "";
     document.getElementById("brojevi_ormarica").value =
       data.brojevi_ormarica || "";
+    document.getElementById("ip_address").value = data.ip_address || "";
 
     // Popunjavanje checkbox-ova na osnovu vrednosti (0 ili 1)
     document.getElementById("aktivan").checked = data.aktivan == 1;
@@ -80,6 +81,7 @@ export class CitaciUI {
     cells[i++].textContent = data.delay_senzora ?? "";
     cells[i++].textContent = data.sn_citaca ?? "";
     cells[i++].textContent = data.sn_barijere ?? "";
+    cells[i++].textContent = data.ip_address ?? "";
     cells[i++].textContent = data.broj_ormarica ?? "";
     cells[i++].textContent = data.broj_redova_ormarica ?? "";
     cells[i++].textContent = data.brojevi_ormarica_po_indexu == 1 ? "Da" : "Ne";
@@ -141,6 +143,7 @@ export class CitaciUI {
     document.getElementById("broj_ormarica").value = "";
     document.getElementById("broj_redova_ormarica").value = "";
     document.getElementById("brojevi_ormarica").value = "";
+    document.getElementById("ip_address").value = "";
 
     // Resetuje checkbox-ove na podrazumevane vrednosti
     document.getElementById("aktivan").checked = false;
@@ -190,6 +193,124 @@ export class CitaciUI {
       brojevi_ormarica_po_indexu: document.getElementById(
         "brojevi_ormarica_po_indexu"
       ).checked,
+      ip_address: document.getElementById("ip_address").value,
     };
+  }
+
+  static getQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      sort: params.get("sort") || "",
+      direction: params.get("direction") || "asc",
+      search: params.get("search") || "",
+    };
+  }
+
+  static updateUrl(params) {
+    const query = new URLSearchParams(params).toString();
+    const newUrl = `${window.location.pathname}?${query}`;
+    history.pushState(null, "", newUrl);
+  }
+
+  static renderTable(tbody, data) {
+    tbody.innerHTML = "";
+
+    const t = window.translations || {
+      yes: "Yes",
+      no: "No",
+      edit: "Edit",
+      delete: "Delete",
+    };
+
+    data.forEach((item) => {
+      const row = document.createElement("tr");
+      row.dataset.id = item.id_citaca;
+      row.classList.add("citac-row");
+
+      // Helper za bezbedan tekstualni prikaz
+      const safe = (value) => document.createTextNode(value ?? "");
+
+      const createCell = (value, classes = "") => {
+        const td = document.createElement("td");
+        td.className = `text-center align-middle ${classes}`.trim();
+        td.appendChild(safe(value));
+        return td;
+      };
+
+      row.appendChild(createCell(item.id_citaca));
+      row.appendChild(createCell(item.opis_citaca));
+      row.appendChild(createCell(item.tip_citaca));
+      row.appendChild(createCell(item.aktivan == 1 ? t.yes : t.no));
+      row.appendChild(
+        createCell(item.citac_za_radno_vreme == 1 ? t.yes : t.no)
+      );
+      row.appendChild(
+        createCell(item.citac_za_kontrolu_pristupa == 1 ? t.yes : t.no)
+      );
+      row.appendChild(createCell(item.citac_za_ormarice == 1 ? t.yes : t.no));
+      row.appendChild(
+        createCell(item.citac_za_grupu_ormarica == 1 ? t.yes : t.no)
+      );
+      row.appendChild(createCell(item.citac_za_odjavu == 1 ? t.yes : t.no));
+      row.appendChild(createCell(item.delay));
+      row.appendChild(createCell(item.delay_senzora));
+      row.appendChild(createCell(item.sn_citaca));
+      row.appendChild(createCell(item.sn_barijere));
+      row.appendChild(createCell(item.ip_address)); // dodatno, ako ti treba
+      row.appendChild(createCell(item.broj_ormarica));
+      row.appendChild(createCell(item.broj_redova_ormarica));
+      row.appendChild(
+        createCell(item.brojevi_ormarica_po_indexu == 1 ? t.yes : t.no)
+      );
+
+      // Edit dugme
+      const editTd = document.createElement("td");
+      editTd.className = "text-center align-middle p-3";
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn btn-primary";
+      editBtn.id = "citaci-edit-btn";
+      editBtn.dataset.id = item.id_citaca;
+      editBtn.innerHTML = `<i class="fa-solid fa-pencil"></i>`;
+      editTd.appendChild(editBtn);
+
+      // Delete dugme
+      const deleteTd = document.createElement("td");
+      deleteTd.className = "text-center align-middle p-3";
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "btn btn-danger";
+      deleteBtn.id = "citaci-delete-btn";
+      deleteBtn.dataset.id = item.id_citaca;
+      deleteBtn.dataset.opis = item.opis_citaca;
+      deleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+      deleteTd.appendChild(deleteBtn);
+
+      row.appendChild(editTd);
+      row.appendChild(deleteTd);
+
+      tbody.appendChild(row);
+    });
+  }
+  static removeErrors() {
+    document.querySelectorAll(".error-message ul").forEach((ul) => {
+      ul.innerHTML = "";
+    });
+  }
+
+  static displayError(errorField, messages) {
+    // Pronalazi kontejner za greške (pretpostavlja se da već postoji u DOM-u)
+    const ul = errorField?.querySelector("ul");
+    if (!ul) return;
+    // Čisti prethodne poruke iz liste
+    ul.innerHTML = "";
+
+    // Prikazuje kontejner (u slučaju da je prethodno bio skriven)
+    errorField.style.display = "block";
+
+    // Za svaku poruku kreira <li> element i dodaje ga u <ul>
+    messages.forEach((msg) => {
+      const li = document.createElement("li");
+      li.textContent = msg;
+      ul.appendChild(li);
+    });
   }
 }

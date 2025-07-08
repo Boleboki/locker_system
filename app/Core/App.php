@@ -44,6 +44,7 @@ class App
      */
     public function run(): void
     {
+        Lang::setLocale($_COOKIE["lang"] ?? DEFAULT_LANGUAGE);
         // Parsiranje URL putanje iz kompletnog URI-ja
         $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 

@@ -15,9 +15,13 @@ export class AuthUI {
    * @param {string[]} messages - niz poruka koje treba prikazati korisniku
    * @returns {void}
    */
-  static displayError(messages) {
+  static removeErrors() {
+    document.querySelectorAll(".error-message ul").forEach((ul) => {
+      ul.innerHTML = "";
+    });
+  }
+  static displayError(errorField, messages) {
     // Pronalazi kontejner za greške (pretpostavlja se da već postoji u DOM-u)
-    const errorField = document.querySelector(".error-message");
     const ul = errorField.querySelector("ul");
 
     // Čisti prethodne poruke iz liste

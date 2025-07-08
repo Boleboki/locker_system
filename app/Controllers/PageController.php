@@ -7,11 +7,11 @@ class PageController
 {
     public function dashboard()
     {
-        view("dashboard.view.php");
+        return view("dashboard.view.php");
     }
 
     public function test()
     {
-        view("test.view.php");
+        return view("test.view.php");
     }
 }

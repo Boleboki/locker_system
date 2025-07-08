@@ -10,3 +10,6 @@ define("DB_PASS", "");
 define("LOG_RETENTION_DAYS", 14);
 
 define("BASE_URL", "/ormarici");
+
+define("DEFAULT_LANGUAGE", "en");
+define("LOG_LANGUAGE", "sr");

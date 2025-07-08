@@ -35,17 +35,27 @@ export function initializeAuthEvents() {
 
         // Poziv AuthManager.login funkcije (pretpostavlja se da je asinhroni API poziv)
         const response = await AuthManager.login(username, password);
-
         // Provera da li je login neuspešan
+        AuthUI.removeErrors();
         if (!response.success) {
           // Prikaz grešaka (može biti niz grešaka ili jedna greška kao string)
-          const messages = Array.isArray(response.error)
-            ? response.error
-            : [response.error || "Došlo je do greške"];
+          if (response.error) {
+            AuthUI.displayError(document.querySelector(".auth_main_error"), [
+              response.error,
+            ]);
+            return;
+          }
+          for (const [field, messages] of Object.entries(response.errors)) {
+            AuthUI.displayError(
+              document
+                .getElementById(field)
+                ?.closest("div")
+                ?.querySelector(".error-message"),
+              messages
+            );
+          }
 
-          AuthUI.displayError(messages); // Prikaz greške na ekranu
-
-          return; // Prekini dalje izvršavanje ako login nije uspeo
+          return;
         }
 
         // Ako server vraća redirect URL, idi na tu stranicu
@@ -54,8 +64,8 @@ export function initializeAuthEvents() {
         }
       } catch (err) {
         // Uhvati sve greške vezane za komunikaciju sa serverom
-        console.error("Greška prilikom logina: ", err);
-        showAlert("Greška u komunikaciji sa serverom: " + err, "danger"); // Prikaz upozorenja
+        console.error("Error logging in: ", err);
+        showAlert("Error logging in: " + err, "danger"); // Prikaz upozorenja
       }
     }
   });
@@ -70,8 +80,8 @@ export function initializeAuthEvents() {
       if (response.redirect) window.location.href = response.redirect;
     } catch (err) {
       // Obrada grešaka prilikom logout-a
-      console.error("Greška prilikom logout-a: ", err);
-      showAlert("Greška u komunikaciji sa serverom: " + err, "danger");
+      console.error("Error logout: ", err);
+      showAlert("Error logout: " + err, "danger");
     }
   });
 }

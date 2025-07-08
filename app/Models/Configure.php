@@ -11,6 +11,7 @@
 namespace App\Models;
 
 use App\Core\Database;
+use App\Core\Lang;
 use App\Core\Logger;
 
 class Configure extends Database
@@ -24,39 +25,50 @@ class Configure extends Database
     }
 
     /**
-     * Vraća sve konfiguracione parove iz baze, sortirane po nazivu.
-     *
-     * @return array Lista konfiguracija kao niz asocijativnih nizova
+     * Vraća sve konfiguracione parove iz baze, sa prevodima ako postoje.
+     * 
+     * @param string|null $lang - Jezik za prevod opisa konfiguracija (ako nije prosleđen koristi se trenutno aktivni jezik)
+     * 
+     * @return array - Niz svih konfiguracija u formatu: [name, par, opis, tip]
+     * 
+     * Izvodi SQL upit koji spaja osnovnu konfiguracionu tabelu sa tabelom prevoda
+     * i vraća rezultate kao niz asocijativnih nizova. Ako dođe do greške, loguje je i prosleđuje dalje.
      */
-    public function getAll(): array
+    public function getAll(?string $lang = null): array
     {
         $stmt = null;
         try {
+            $lang = $lang ?? Lang::getLocale();
             $this->ensureConnection();
             // Priprema SQL upita za čitanje svih redova iz konfiguracione tabele
-            $stmt = $this->conn->prepare("SELECT * FROM " . self::CONFIGURATION_TABLE . " ORDER BY name");
+            $query = "
+                SELECT c.name as name, c.par as par, t.description as opis, c.tip as tip
+                FROM " . self::CONFIGURATION_TABLE . " c
+                LEFT JOIN configuration_translations t 
+                    ON c.name = t.configuration_name AND t.language = ?
+                ORDER BY c.name
+            ";
+            $stmt = $this->conn->prepare($query);
             if (!$stmt) {
-                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
+            $stmt->bind_param("s", $lang);
 
             // Izvršava pripremljeni upit
             if (!$stmt->execute()) {
-                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
             // Dobija rezultat
             $result = $stmt->get_result();
             if (!$result) {
-                Logger::error("Failed to get result: " . $stmt->error);
                 throw new \Exception("Failed to get result: " . $stmt->error);
             }
 
             // Vraća sve rezultate kao niz asocijativnih nizova
             return $result->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $e) {
-            Logger::error("Error in Configure->getAll method: " . $e->getMessage());
+            Logger::error(Logger::translate('logs.configuration.error_get_all', ['error' => $e->getMessage()]));
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -82,19 +94,16 @@ class Configure extends Database
             // Priprema SQL upit za ažuriranje vrednosti
             $stmt = $this->conn->prepare("UPDATE " . self::CONFIGURATION_TABLE . " SET par = ? WHERE name = ?");
             if (!$stmt) {
-                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje vrednosti: nova vrednost i ključ
             if (!$stmt->bind_param("ss", $value, $key)) {
-                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             // Izvršava upit
             if (!$stmt->execute()) {
-                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
@@ -102,7 +111,7 @@ class Configure extends Database
             return true;
         } catch (\Throwable $e) {
             $this->conn->rollback();
-            Logger::error("Error in Configure->update method: " . $e->getMessage());
+            Logger::error(Logger::translate('logs.configuration.error_update', ['key' => $key, 'error' => $e->getMessage()]));
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {
@@ -126,18 +135,15 @@ class Configure extends Database
             // Priprema SQL upit za brisanje parametra
             $stmt = $this->conn->prepare("DELETE FROM " . self::CONFIGURATION_TABLE . " WHERE name = ?");
             if (!$stmt) {
-                Logger::error("Failed to prepare statement: " . $this->conn->error);
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
             }
 
             // Vezuje ključ (string)
             if (!$stmt->bind_param("s", $key)) {
-                Logger::error("Failed to bind parameters: " . $stmt->error);
                 throw new \Exception("Failed to bind parameters: " . $stmt->error);
             }
 
             if (!$stmt->execute()) {
-                Logger::error("Failed to execute statement: " . $stmt->error);
                 throw new \Exception("Failed to execute statement: " . $stmt->error);
             }
 
@@ -145,7 +151,7 @@ class Configure extends Database
             return true;
         } catch (\Throwable $e) {
             $this->conn->rollback();
-            Logger::error("Error in Configure->delete method: " . $e->getMessage());
+            Logger::error(Logger::translate('logs.configuration.error_delete', ['key' => $key, 'error' => $e->getMessage()]));
             throw $e; // Prosleđuje izuzetak dalje
         } finally {
             if ($stmt) {

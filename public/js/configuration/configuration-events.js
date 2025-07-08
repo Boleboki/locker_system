@@ -62,7 +62,7 @@ export function initializeConfigurationEvents() {
 
         // Ako server vrati grešku, prikazuje alert i prekida dalje izvršavanje
         if (!data.success) {
-          showAlert("Greška pri izmeni: " + data.error, "danger");
+          showAlert(data.error, "danger");
           return;
         }
 
@@ -71,11 +71,11 @@ export function initializeConfigurationEvents() {
 
         // Zatvara modal i prikazuje poruku o uspehu
         ConfigurationUI.closeModal();
-        showAlert("Uspešno izmenjeno polje " + kljuc, "success");
+        showAlert(data.message, "success");
       } catch (err) {
         // Ako dođe do greške prilikom poziva ili mreže, prikazuje alert i loguje grešku
-        showAlert("Greška pri izmeni: " + err, "danger");
-        console.error("Greška pri izmeni:", err);
+        showAlert("Error editing configuration: " + err, "danger");
+        console.error("Error editing configuration: ", err);
       }
     }
   });

@@ -1,0 +1,8 @@
+<?php
+
+
+return [
+    "404" => "Page not found",
+    "403" => "You do not have permission to access this page.",
+    "back" => "Back to homepage"
+];
