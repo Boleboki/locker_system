@@ -1,0 +1,11 @@
+{
+  "configuration.page_title": "Podešavanja programa",
+  "configuration.table_name": "Ime",
+  "configuration.table_value": "Vrednost",
+  "configuration.table_description": "Opis",
+  "configuration.table_type": "Tip",
+  "configuration.modal_title": "Detalji konfiguracije",
+  "configuration.modal_name": "Ime",
+  "configuration.modal_value": "Vrednost",
+  "configuration.modal_description": "Opis"
+}

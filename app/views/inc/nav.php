@@ -117,17 +117,17 @@ use App\Core\LangKey;
               </li>
               <li class="dropdown-submenu">
                 <a class="dropdown-item dropdown-toggle" href="<?= url('/citaci') ?>">
-                  <?= Lang::get('nav.settings_scanners') ?>
+                  <?= Lang::get('nav.settings_readers') ?>
                 </a>
                 <ul class="dropdown-menu">
                   <li>
                     <a class="dropdown-item" href="<?= url('/citaci') ?>">
-                      <?= Lang::get('nav.scanners_list') ?>
+                      <?= Lang::get('nav.readers_list') ?>
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item" href="<?= url('/citaci/create') ?>">
-                      <?= Lang::get('nav.scanners_create') ?>
+                      <?= Lang::get('nav.readers_create') ?>
                     </a>
                   </li>
                 </ul>

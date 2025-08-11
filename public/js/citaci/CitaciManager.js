@@ -46,24 +46,9 @@ export class CitaciManager {
    * @param {string} search - Tekst za pretragu.
    * @returns {Promise<Object[]>} - Niz čitača u JSON formatu
    */
-  static async getAll(sortField = "", sortDirection = "asc", search = "") {
+  static async getAll() {
     try {
-      const params = new URLSearchParams();
-
-      // Dodaj sort parametre samo ako su definisani
-      if (sortField) {
-        params.append("sort", sortField);
-        params.append("direction", sortDirection);
-      }
-
-      // Dodaj search parametar samo ako nije prazan
-      if (search.trim() !== "") {
-        params.append("search", search.trim());
-      }
-
-      const query = params.toString() ? `?${params.toString()}` : "";
-
-      const response = await fetch(url(`/api/citaci${query}`));
+      const response = await fetch(url(`/api/citaci`));
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error("Server error: " + errorText);

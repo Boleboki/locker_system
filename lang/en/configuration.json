@@ -1,0 +1,11 @@
+{
+  "configuration.page_title": "Program Settings",
+  "configuration.table_name": "Name",
+  "configuration.table_value": "Value",
+  "configuration.table_description": "Description",
+  "configuration.table_type": "Type",
+  "configuration.modal_title": "Configuration Details",
+  "configuration.modal_name": "Name",
+  "configuration.modal_value": "Value",
+  "configuration.modal_description": "Description"
+}

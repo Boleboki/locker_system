@@ -21,95 +21,72 @@ import { CitaciUI } from "./CitaciUI.js";
  * - dodavanje i izmena čitača
  */
 export function initializeCitaciEvents() {
-  const citaciTable = document.querySelector("#citaciTableContainer");
+  const citaciTable = document.querySelector("#citaciTable");
+  const citaciTableContainer = document.querySelector("#citaciTableContainer");
   const citaciAddForm = document.querySelector("#citaciAddForm");
   const citacModal = document.querySelector("#citacModal");
   const confirmCitacDeleteModal = document.querySelector("#deleteCitacModal");
-  const searchInput = document.getElementById("searchInput");
-  const searchIcon = document.getElementById("search-icon");
-
+  const searchInput = document.querySelector("#searchInput");
+  const paginationContainer = document.querySelector("#paginationContainer");
   let row = null;
-  const citaciTableBody = citaciTable?.querySelector("tbody");
+  const citaciTableBody = citaciTableContainer?.querySelector("tbody");
 
-  let currentSortField = null;
-  let currentSortDirection = "asc";
-  async function loadAndRenderCitaci({ sortField = null, search = null } = {}) {
-    if (!citaciTable || !citaciTableBody) return;
-
-    // Uzimamo trenutne URL parametre da bismo ih zadržali
-    const currentParams = CitaciUI.getQueryParams();
-    const urlParams = {};
-
-    // Ako je prosleđen search iz inputa, koristi ga; ako nije, koristi iz URL-a
-    if (search !== null) {
-      if (search.trim() !== "") urlParams.search = search.trim();
-    } else if (currentParams.search?.trim()) {
-      urlParams.search = currentParams.search.trim();
-    }
-
-    // Ako je prosleđen novi sort, ažuriraj direction i field
-    if (sortField !== null) {
-      if (currentSortField === sortField) {
-        currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
-      } else {
-        currentSortField = sortField;
-        currentSortDirection = "asc";
-      }
-      urlParams.sort = currentSortField;
-      urlParams.direction = currentSortDirection;
-    } else if (currentParams.sort) {
-      // Ako nije prosleđen novi sort, koristi prethodne vrednosti iz URL-a
-      currentSortField = currentParams.sort;
-      currentSortDirection = currentParams.direction || "asc";
-      urlParams.sort = currentSortField;
-      urlParams.direction = currentSortDirection;
-    }
-
-    CitaciUI.updateUrl(urlParams); // Ažuriraj URL samo sa relevantnim vrednostima
+  async function loadAndRenderCitaci() {
+    if (!citaciTableContainer || !citaciTableBody) return;
 
     try {
-      const response = await CitaciManager.getAll(
-        urlParams.sort || "",
-        urlParams.direction || "asc",
-        urlParams.search || ""
+      const response = await CitaciManager.getAll();
+      if (!response.success) {
+        showAlert(response.error, "danger");
+        return;
+      }
+      CitaciUI.setTableData(response.data);
+      CitaciUI.setPageSize(
+        Number(document.querySelector("#poStranici")?.value) || 5
       );
-      if (response.success)
-        CitaciUI.renderTable(citaciTableBody, response.data);
+      CitaciUI.renderTable();
     } catch (err) {
       showAlert("Error getting readers: " + err, "danger");
       console.error("Error getting readers:", err);
     }
   }
-
-  // Pozovi odmah na inicijalizaciji (kada se DOM učita)
-  const params = CitaciUI.getQueryParams();
-  if (searchInput && params.search) {
-    searchInput.value = params.search;
-  }
+  paginationContainer?.addEventListener("click", (e) => {
+    if (e.target.dataset.page) {
+      CitaciUI.setCurrentPage(Number(e.target.dataset.page));
+      CitaciUI.renderTable();
+    }
+  });
+  document.querySelector("#poStranici")?.addEventListener("change", (e) => {
+    CitaciUI.setPageSize(Number(e.target.value) || 5);
+    CitaciUI.setCurrentPage(1);
+    CitaciUI.renderTable();
+  });
   loadAndRenderCitaci();
 
-  // Search ikonica klik
-  searchIcon?.addEventListener("click", () => {
-    loadAndRenderCitaci({ search: searchInput.value.trim() });
-  });
-
-  // Enter u search inputu
-  searchInput?.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      loadAndRenderCitaci({ search: searchInput.value.trim() });
-    }
+  searchInput?.addEventListener("input", (e) => {
+    CitaciUI.setSearchValue(e.target.value);
+    CitaciUI.renderTable();
   });
 
   /**
    * Klik na dugmad u tabeli: brisanje ili uređivanje
    */
-  citaciTable?.addEventListener("click", async (e) => {
+  citaciTableContainer?.addEventListener("click", async (e) => {
     if (e.target.closest("th")) {
-      const sortData = e.target.closest("th")?.dataset.sort;
-      if (!sortData) return;
-      await loadAndRenderCitaci({ sortField: sortData });
-      return;
+      let sortField = e.target.closest("th")?.dataset.sort;
+      if (!sortField) return;
+      document.querySelectorAll("th[data-sort]").forEach((el) => {
+        el.classList.remove("sort-asc", "sort-desc");
+      });
+      e.target.classList.remove("sort-asc", "sort-desc");
+      if (e.target.dataset.order === "asc") {
+        e.target.dataset.order = "desc";
+        e.target.classList.add("sort-desc");
+      } else {
+        e.target.dataset.order = "asc";
+        e.target.classList.add("sort-asc");
+      }
+      CitaciUI.toggleSort(sortField);
     }
     row = e.target.closest("tbody tr");
     if (!row) return;
@@ -171,7 +148,7 @@ export function initializeCitaciEvents() {
   /**
    * Dvoklik na red u tabeli - otvara modal za izmenu
    */
-  citaciTable?.addEventListener("dblclick", async (e) => {
+  citaciTableContainer?.addEventListener("dblclick", async (e) => {
     row = e.target.closest("tbody tr");
     if (!row) return;
 

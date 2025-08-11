@@ -1,0 +1,62 @@
+{
+  "reader.page_title": "Podešavanja čitača",
+
+  "reader.table.id": "ID",
+  "reader.table.description": "Opis",
+  "reader.table.type": "Tip",
+  "reader.table.active": "Aktivan",
+  "reader.table.reader_type_title": "Vrsta čitača",
+
+  "reader.table.reader_type.group_evidence": "Evidencija",
+  "reader.table.reader_type.group_other": "Ostalo",
+  "reader.table.reader_type.working_time": "Radnog vremena",
+  "reader.table.reader_type.access_control": "Kontrola pristupa",
+  "reader.table.reader_type.for_lockers": "Za ormariće",
+  "reader.table.reader_type.for_lockers_group": "Za grupu ormarića",
+  "reader.table.reader_type.for_logout": "Za odjavu",
+
+  "reader.table.delay_title": "Delay",
+  "reader.table.delay.time": "Vremena",
+  "reader.table.delay.sensor": "Senzora",
+
+  "reader.table.sn_title": "SN",
+  "reader.table.serial_number.reader": "Čitača",
+  "reader.table.serial_number.barrier": "Barijere",
+
+  "reader.table.lockers_title": "Ormarići",
+  "reader.table.lockers.number": "Broj",
+  "reader.table.lockers.rows_number": "Broj redova",
+  "reader.table.lockers.by_index": "Po indeksu",
+  "reader.table.ip_address": "IP adresa",
+
+  "reader.buttons.add_new": "Dodaj novi čitač",
+
+  "reader.modal_delete.title": "Potvrda brisanja",
+  "reader.modal_delete.message": "Da li ste sigurni da želite da obrišete čitač",
+
+  "reader.form.create_title": "Unos novog čitača",
+  "reader.form.edit_title": "Izmena čitača",
+  "reader.form.section_title": "Funkcionalnosti čitača",
+
+  "reader.form.labels.active": "Aktivan",
+  "reader.form.labels.id": "ID čitača",
+  "reader.form.labels.type": "Tip čitača",
+  "reader.form.labels.serial_number_reader": "SN čitača",
+  "reader.form.labels.serial_number_barrier": "SN barijere",
+  "reader.form.labels.delay_time": "Delay vreme",
+  "reader.form.labels.delay_sensor": "Delay senzora",
+  "reader.form.labels.description": "Opis čitača",
+  "reader.form.labels.lockers_number": "Broj ormarića",
+  "reader.form.labels.lockers_rows": "Broj redova",
+  "reader.form.labels.lockers_by_index": "Po indeksu niza",
+  "reader.form.labels.lockers_ids": "Brojevi ormarića / ID brojevi čitača",
+  "reader.form.labels.ip_address": "IP adresa",
+
+  "reader.form.checkboxes.access_control": "za kontrolu pristupa",
+  "reader.form.checkboxes.working_time": "za radno vreme",
+  "reader.form.checkboxes.for_lockers": "za ormariće",
+  "reader.form.checkboxes.for_lockers_group": "za grupu ormarića",
+  "reader.form.checkboxes.for_logout": "za odjavu",
+
+  "reader.form.textarea_help": "*koristite zarez za odvajanje ormarića"
+}

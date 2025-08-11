@@ -1,0 +1,63 @@
+{
+  "reader.page_title": "Reader Configuration",
+
+  "reader.table.id": "ID",
+  "reader.table.description": "Description",
+  "reader.table.type": "Type",
+  "reader.table.active": "Active",
+  "reader.table.reader_type_title": "Reader Type",
+
+  "reader.table.reader_type.group_evidence": "Tracking",
+  "reader.table.reader_type.group_other": "Other",
+  "reader.table.reader_type.working_time": "Working Time",
+  "reader.table.reader_type.access_control": "Access Control",
+  "reader.table.reader_type.for_lockers": "For Lockers",
+  "reader.table.reader_type.for_lockers_group": "For Locker Group",
+  "reader.table.reader_type.for_logout": "For Logout",
+
+  "reader.table.delay_title": "Delay",
+  "reader.table.delay.time": "Time",
+  "reader.table.delay.sensor": "Sensor",
+
+  "reader.table.sn_title": "SN",
+  "reader.table.serial_number.reader": "Reader",
+  "reader.table.serial_number.barrier": "Barrier",
+
+  "reader.table.lockers_title": "Lockers",
+  "reader.table.lockers.number": "Number",
+  "reader.table.lockers.rows_number": "Number of Rows",
+  "reader.table.lockers.by_index": "By Index",
+
+  "reader.table.ip_address": "IP address",
+
+  "reader.buttons.add_new": "Add new reader",
+
+  "reader.modal_delete.title": "Delete Confirmation",
+  "reader.modal_delete.message": "Are you sure you want to delete reader",
+
+  "reader.form.create_title": "Create New Reader",
+  "reader.form.edit_title": "Edit Reader",
+  "reader.form.section_title": "Reader Functionalities",
+
+  "reader.form.labels.active": "Active",
+  "reader.form.labels.id": "Reader ID",
+  "reader.form.labels.type": "Reader Type",
+  "reader.form.labels.serial_number_reader": "Reader SN",
+  "reader.form.labels.serial_number_barrier": "Barrier SN",
+  "reader.form.labels.delay_time": "Delay Time",
+  "reader.form.labels.delay_sensor": "Sensor Delay",
+  "reader.form.labels.description": "Reader Description",
+  "reader.form.labels.lockers_number": "Number of Lockers",
+  "reader.form.labels.lockers_rows": "Number of Rows",
+  "reader.form.labels.lockers_by_index": "By Index",
+  "reader.form.labels.lockers_ids": "Locker Numbers / Reader IDs",
+  "reader.form.labels.ip_address": "IP address",
+
+  "reader.form.checkboxes.access_control": "for access control",
+  "reader.form.checkboxes.working_time": "for working time",
+  "reader.form.checkboxes.for_lockers": "for lockers",
+  "reader.form.checkboxes.for_lockers_group": "for locker group",
+  "reader.form.checkboxes.for_logout": "for logout",
+
+  "reader.form.textarea_help": "*use a comma to separate locker numbers"
+}

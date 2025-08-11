@@ -68,7 +68,6 @@ class Validator
     {
         // Učitavanje prevoda za poruke grešaka iz lang fajlova
         $translations = Lang::getGroup("validator");
-
         foreach ($rules as $field => $rule) {
             try {
                 // Postavljanje lokalizovanih poruka za validaciona pravila

@@ -212,9 +212,151 @@ export class CitaciUI {
     history.pushState(null, "", newUrl);
   }
 
-  static renderTable(tbody, data) {
-    tbody.innerHTML = "";
+  static tableData = {};
+  static sortDirection = 1;
+  static sortField = null;
+  static pageSize = 5;
+  static searchValue = "";
+  static currentPage = 1;
 
+  static setTableData(data) {
+    this.tableData = data;
+  }
+  static setPageSize(size) {
+    if (size < 1) return;
+    this.pageSize = size;
+  }
+  static setSearchValue(value) {
+    this.searchValue = value;
+    this.setCurrentPage(1);
+  }
+  static setCurrentPage(page) {
+    if (page > Math.ceil(this.tableData.length / this.pageSize) || page < 1)
+      return;
+    this.currentPage = page;
+  }
+
+  static nextPage() {
+    this.setCurrentPage(this.currentPage + 1);
+    this.renderTable();
+  }
+  static prevPage() {
+    this.setCurrentPage(this.currentPage - 1);
+    this.renderTable();
+  }
+  static toggleSort(column) {
+    if (!column) return;
+    this.setCurrentPage(1);
+    if (this.sortField === column) {
+      this.sortDirection *= -1;
+    } else {
+      this.sortField = column;
+      this.sortDirection = 1;
+    }
+    this.renderTable();
+  }
+
+  static renderPagination(currentPage, totalPages, data = this.tableData) {
+    const container = document.querySelector(
+      "#paginationContainer .pagination"
+    );
+    const showedNumber = document.querySelector("#showedNumber");
+    const totalNumber = document.querySelector("#totalNumber");
+    container.innerHTML = "";
+
+    const createButton = (
+      label,
+      page,
+      isActive = false,
+      isDisabled = false
+    ) => {
+      const btn = document.createElement("button");
+      btn.textContent = label;
+      btn.classList.add("page-btn");
+      if (isActive) btn.classList.add("active");
+      if (isDisabled) btn.disabled = true;
+      btn.dataset.page = page;
+      return btn;
+    };
+
+    const maxButtons = 5;
+
+    container.appendChild(
+      createButton("«", currentPage - 1, false, currentPage === 1)
+    );
+
+    if (totalPages <= maxButtons) {
+      for (let i = 1; i <= totalPages; i++) {
+        container.appendChild(createButton(i, i, i === currentPage));
+      }
+    } else {
+      if (currentPage <= maxButtons - 2) {
+        for (let i = 1; i <= maxButtons - 1; i++) {
+          container.appendChild(createButton(i, i, i === currentPage));
+        }
+        container.appendChild(createButton("...", -1, false, true));
+        container.appendChild(createButton(totalPages, totalPages));
+      } else if (currentPage >= totalPages - 2) {
+        container.appendChild(createButton(1, 1));
+        container.appendChild(createButton("...", -1, false, true));
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          container.appendChild(createButton(i, i, i === currentPage));
+        }
+      } else {
+        container.appendChild(createButton(1, 1));
+        container.appendChild(createButton("...", -1, false, true));
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          container.appendChild(createButton(i, i, i === currentPage));
+        }
+        container.appendChild(createButton("...", -1, false, true));
+        container.appendChild(createButton(totalPages, totalPages));
+      }
+    }
+
+    container.appendChild(
+      createButton("»", currentPage + 1, false, currentPage === totalPages)
+    );
+    showedNumber.textContent = `${
+      (this.currentPage - 1) * this.pageSize + 1
+    }-${Math.min(this.currentPage * this.pageSize, data.length)}`;
+    if (data.length === 0) {
+      showedNumber.textContent = "0";
+    }
+    totalNumber.textContent = data.length;
+  }
+
+  static sortTableData(data = this.tableData) {
+    if (!this.sortField) return data;
+    return data.sort((a, b) => {
+      if (a[this.sortField] < b[this.sortField]) return -this.sortDirection;
+      if (a[this.sortField] > b[this.sortField]) return this.sortDirection;
+      return 0;
+    });
+  }
+  static filterTableData(data = this.tableData) {
+    if (!this.searchValue) return this.tableData;
+    return data.filter((item) => {
+      return Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(this.searchValue.toLowerCase())
+      );
+    });
+  }
+  static paginateTableData(data = this.tableData) {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return data.slice(start, start + this.pageSize);
+  }
+
+  static renderTable(data = this.tableData) {
+    const tbody = document.querySelector("#citaciTableContainer tbody");
+    tbody.innerHTML = "";
+    let filteredData = this.filterTableData(data);
+    let sortedData = this.sortTableData(filteredData);
+    const finalData = this.paginateTableData(sortedData);
+    this.renderPagination(
+      this.currentPage,
+      Math.ceil(filteredData.length / this.pageSize),
+      filteredData
+    );
     const t = window.translations || {
       yes: "Yes",
       no: "No",
@@ -222,7 +364,7 @@ export class CitaciUI {
       delete: "Delete",
     };
 
-    data.forEach((item) => {
+    finalData.forEach((item) => {
       const row = document.createElement("tr");
       row.dataset.id = item.id_citaca;
       row.classList.add("citac-row");
@@ -297,16 +439,12 @@ export class CitaciUI {
   }
 
   static displayError(errorField, messages) {
-    // Pronalazi kontejner za greške (pretpostavlja se da već postoji u DOM-u)
     const ul = errorField?.querySelector("ul");
     if (!ul) return;
-    // Čisti prethodne poruke iz liste
     ul.innerHTML = "";
 
-    // Prikazuje kontejner (u slučaju da je prethodno bio skriven)
     errorField.style.display = "block";
 
-    // Za svaku poruku kreira <li> element i dodaje ga u <ul>
     messages.forEach((msg) => {
       const li = document.createElement("li");
       li.textContent = msg;

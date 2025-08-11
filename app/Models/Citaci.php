@@ -53,75 +53,21 @@ class Citaci extends Database
     ];
 
     /**
-     * Pomoćna metoda za generisanje SQL naredbe za sortiranje rezultata
-     * 
-     * @param string|null $sort - Kolona po kojoj se sortira (mora biti u listi dozvoljenih kolona)
-     * @param string|null $direction - Smer sortiranja: 'asc' ili 'desc'
-     * 
-     * @return string - Deo SQL upita za sortiranje (npr. "ORDER BY opis_citaca asc") ili prazan string ako nema sortiranja
-     * 
-     * Ako se traženo polje ne nalazi u listi dozvoljenih kolona ($tableKeys), koristi se podrazumevano prvo polje.
-     * Ako je smer neispravan, koristi se 'asc' kao podrazumevani.
-     */
-    protected function sortQuery(?string $sort = null, ?string $direction = null): string
-    {
-        if (empty($sort)) return "";
-        $allowedDirs = ['asc', 'desc'];
-
-        $sort = !in_array($sort, self::$tableKeys) ? self::$tableKeys[0] : $sort;
-
-        $direction = strtolower($direction);
-        $direction = !in_array($direction, $allowedDirs) ? $allowedDirs[0] : $direction;
-        return " ORDER BY " . $sort . " " . $direction;
-    }
-    /**
      * Dohvata sve čitače iz baze uz opciono sortiranje i pretragu
-     * 
-     * @param string|null $sort - Naziv kolone po kojoj se sortira (mora biti u listi dozvoljenih)
-     * @param string|null $direction - Smer sortiranja ('asc' ili 'desc')
-     * @param string|null $search - Tekst za pretragu (pretražuje se opis_citaca i sn_citaca)
      * 
      * @return array - Niz svih redova iz tabele 'citaci', kao asocijativni nizovi
      */
-    public function getAll(?string $sort = null, ?string $direction = null, ?string $search = null): array
+    public function getAll(): array
     {
         $stmt = null;
         try {
             $this->ensureConnection();
 
-            $sortPart = $this->sortQuery($sort, $direction);
-            $params = [];
-            $paramTypes = '';
-            $whereClause = '';
-
-            // Lista dozvoljenih polja za pretragu
-            $searchableFields = [
-                'id_citaca',
-                'opis_citaca',
-                'sn_citaca',
-                'sn_barijere',
-                'ip_address'
-            ];
-
-            if (!empty($search)) {
-                $conditions = [];
-                foreach ($searchableFields as $field) {
-                    $conditions[] = "$field LIKE ?";
-                    $params[] = '%' . $search . '%';
-                    $paramTypes .= 's';
-                }
-                $whereClause = ' WHERE ' . implode(' OR ', $conditions);
-            }
-
-            $sql = "SELECT * FROM " . self::TABLE_NAME . $whereClause . $sortPart;
+            $sql = "SELECT * FROM " . self::TABLE_NAME;
 
             $stmt = $this->conn->prepare($sql);
             if (!$stmt) {
                 throw new \Exception("Failed to prepare statement: " . $this->conn->error);
-            }
-
-            if (!empty($params)) {
-                $stmt->bind_param($paramTypes, ...$params);
             }
 
             if (!$stmt->execute()) {

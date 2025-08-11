@@ -69,35 +69,18 @@ class Lang
 
         // Koristi prosleđeni jezik ako postoji, u suprotnom koristi trenutno postavljeni
         $locale = $overrideLocale ?? self::$locale;
-
         // Prvi segment označava naziv fajla
         $filePath = $segments[0];
 
-        // Ostali segmenti predstavljaju ugnježdene ključeve u fajlu
-        $nestedKeys = array_slice($segments, 1);
-
         // Ako prevod za datu datoteku još nije učitan u keš
         if (!isset(self::$translations[$locale][$filePath])) {
-            $path = base_path("lang/" . $locale . "/" . $filePath . ".php");
-
+            $path = base_path("lang/" . $locale . "/" . $filePath . ".json");
             // Ako fajl postoji, uključuje ga i čuva njegov sadržaj u kešu
             self::$translations[$locale][$filePath] = file_exists($path)
-                ? include $path
+                ? json_decode(file_get_contents($path), true)
                 : [];
         }
-
-        // Dohvata keširani prevod za datu datoteku
-        $translation = self::$translations[$locale][$filePath];
-
-        // Prolazi kroz sve ugnježdene ključeve da bi došao do konačne vrednosti
-        foreach ($nestedKeys as $key) {
-            if (is_array($translation) && isset($translation[$key])) {
-                $translation = $translation[$key];
-            } else {
-                // Ako neki od ključeva ne postoji, vraća originalni ključ
-                return implode('.', $segments);
-            }
-        }
+        $translation = self::$translations[$locale][$filePath][$key];
 
         // Zamenjuje placeholder-e u prevodu sa prosleđenim vrednostima
         foreach ($replace as $k => $v) {
@@ -105,7 +88,7 @@ class Lang
         }
 
         // Ako je rezultat string, vraća prevod, inače vraća ključ
-        return is_string($translation) ? $translation : implode('.', $segments);
+        return is_string($translation) ? $translation : $key;
     }
 
     /**
@@ -125,11 +108,11 @@ class Lang
 
         // Ako fajl još nije učitan, pokušaj da ga učitaš
         if (!isset(self::$translations[$locale][$file])) {
-            $path = base_path("lang/{$locale}/{$file}.php");
+            $path = base_path("lang/{$locale}/{$file}.json");
 
             // Ako fajl postoji, uključuje ga; u suprotnom prazno
             self::$translations[$locale][$file] = file_exists($path)
-                ? include $path
+                ? json_decode(file_get_contents($path), true)
                 : [];
         }
 
