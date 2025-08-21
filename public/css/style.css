@@ -1,23 +1,160 @@
+:root {
+  /* ---------- Brand / Primary colors ---------- */
+  --primary-color: #0d6efd; /* Glavna brand boja */
+  --primary-hover: #0b5ed7; /* Za hover efekat */
+  --secondary-color: #198754; /* Sekundarna boja */
+  --accent-color: #ffc107; /* Za naglaske i akcije */
+
+  /* ---------- Backgrounds ---------- */
+  --bg-main: #f8f9fa; /* Generalna pozadina */
+  --bg-content: #ffffff; /* Pozadina content boxova */
+  --navbar-bg: #212529; /* Tamna navbar pozadina */
+  --navbar-bg-light: #343a40; /* Za hover dropdown */
+  --modal-bg: #ffffff; /* Pozadina modala */
+  --modal-bg-dark: #2c2c2c; /* Tamna tema modal */
+
+  /* ---------- Text colors ---------- */
+  --text-primary: #212529; /* Glavni tekst */
+  --text-secondary: #6c757d; /* Sivi tekst */
+  --navbar-text: #f8f9fa; /* Tekst u navbaru */
+  --modal-text: #212529; /* Tekst u modalima */
+  --modal-text-dark: #f8f9fa; /* Za tamnu temu */
+
+  /* ---------- Status / semantic colors ---------- */
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+
+  /* ---------- Table colors ---------- */
+  --table-header-bg: #1f1f1f; /* Header tabele */
+  --table-header-text: #ffffff;
+  --table-row-bg: #ffffff; /* Pozadina običnog reda */
+  --table-row-alt-bg: #e6e6e6; /* Alternativni red */
+  --table-row-text: #212529;
+  --table-row-hover-bg: #a3a3a3;
+  --table-border: rgba(0, 0, 0, 0.1); /* Border tabela */
+
+  /* ---------- Buttons ---------- */
+  --btn-primary-bg: var(--primary-color);
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: var(--secondary-color);
+  --btn-secondary-text: #ffffff;
+  --btn-success-bg: var(--success-color);
+  --btn-danger-bg: #b02a37;
+  --btn-warning-bg: var(--warning-color);
+
+  /* ---------- Pagination ---------- */
+  --pagination-bg: #ffffff;
+  --pagination-border: #ccc;
+  --pagination-hover-bg: #f0f0f0;
+  --pagination-active-bg: #212529;
+  --pagination-active-text: #ffffff;
+
+  /* ---------- Inputs / Search ---------- */
+  --input-bg: #ffffff;
+  --input-text: #212529;
+  --input-border: #ced4da;
+
+  /* ---------- Misc / Accent ---------- */
+  --accent-hover: #ffd633;
+
+  --white: #ffffff;
+  --black: #000000;
+
+  --scrollbar-bg: #f1f1f1; /* pozadina scroll track-a */
+  --scrollbar-thumb: #c1c1c1; /* klizač */
+  --scrollbar-thumb-hover: #a1a1a1;
+}
+
+.dark-theme {
+  --primary-color: #0d6efd;
+  --primary-hover: #0b5ed7;
+  --secondary-color: #6c757d; /* siva sekundarna boja */
+  --accent-color: #ffc107;
+
+  --bg-main: #121212;
+  --bg-content: #1e1e1e;
+  --navbar-bg: #1c1c1c;
+  --navbar-bg-light: #2c2c2c;
+  --modal-bg: #2c2c2c;
+  --modal-bg-dark: #1e1e1e;
+
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --navbar-text: #ffffff;
+  --modal-text: #e0e0e0;
+  --modal-text-dark: #ffffff;
+
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+
+  --table-header-bg: #121212;
+  --table-header-text: #fff;
+  --table-row-bg: #1e1e1e;
+  --table-row-alt-bg: #121212;
+  --table-row-text: #e0e0e0;
+  --table-row-hover-bg: #2a2a2a;
+  --table-border: rgba(255, 255, 255, 0.1);
+
+  --btn-primary-bg: var(--primary-color);
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: var(--secondary-color);
+  --btn-secondary-text: #ffffff;
+
+  --pagination-bg: #1e1e1e;
+  --pagination-border: #555;
+  --pagination-hover-bg: #2a2a2a;
+  --pagination-active-bg: #121212;
+  --pagination-active-text: #ffffff;
+
+  --input-bg: #2c2c2c;
+  --input-text: #e0e0e0;
+  --input-border: #555;
+
+  --accent-hover: #ffd633;
+
+  --scrollbar-bg: #2c2c2c;
+  --scrollbar-thumb: #555;
+  --scrollbar-thumb-hover: #777;
+}
+
 html body {
   font-family: sans-serif;
   font-size: 16px;
   font-weight: 400;
-  color: #000;
+  color: var(--text-primary);
   line-height: 1.6;
-  background-color: #f9f9f9;
+  background-color: var(--bg-main);
   margin: 0;
   padding: 0;
 }
-h1, h2, h3, h4, h5, h6 {
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
-h1 { font-size: 2.25rem; }
-h2 { font-size: 1.75rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
+h1 {
+  font-size: 2.25rem;
+}
+h2 {
+  font-size: 1.75rem;
+}
+h3 {
+  font-size: 1.5rem;
+}
+h4 {
+  font-size: 1.25rem;
+}
 
 .navbar-nav {
   flex-direction: row;
@@ -30,7 +167,6 @@ h4 { font-size: 1.25rem; }
     align-items: flex-start;
   }
 }
-
 
 button,
 button:focus,
@@ -49,4 +185,46 @@ button:active,
 button i,
 .btn i {
   outline: none !important;
+}
+
+.error-message {
+  min-height: 1.5rem;
+  color: var(--danger-color);
+  font-size: 0.875rem;
+  visibility: hidden;
+}
+
+.error-message ul {
+  padding-left: 1rem;
+  list-style-type: "* ";
+}
+
+.error-message.visible {
+  visibility: visible;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-bg);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-bg); /* mali "razmak" */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
 }

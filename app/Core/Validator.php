@@ -113,7 +113,7 @@ class Validator
         // Ako pravilo podržava setTemplate i postoji prevod za njega
         if (method_exists($rule, 'setTemplate')) {
             $className = (new \ReflectionClass($rule))->getShortName(); // npr. Ip → "Ip"
-            $key = lcfirst($className); // "Ip" → "ip"
+            $key = "validator." . lcfirst($className); // "Ip" → "ip"
 
             if (isset($translations[$key])) {
                 $rule->setTemplate($translations[$key]);

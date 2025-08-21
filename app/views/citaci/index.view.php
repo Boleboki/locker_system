@@ -12,41 +12,51 @@ require base_path("app/views/inc/header.php") ?>
         overflow-y: auto;
     }
 
-    /* Tabela */
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        table-layout: auto !important;
-    }
-
     .table-hover tbody tr:hover {
-        background-color: #e9ecef;
+        background-color: var(--table-row-hover-bg);
         cursor: pointer;
     }
 
-    thead th {
-        box-sizing: border-box;
-        padding: 8px;
-        cursor: pointer;
-    }
-
-    td {
+    tbody td {
         padding: 8px;
         text-align: center;
         vertical-align: middle;
         box-sizing: border-box;
+        color: var(--table-row-text);
     }
 
-    tr:first-child th:first-child,
+    th,
+    td {
+        padding: 12px 15px;
+        border: 1px solid var(--table-border);
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    tbody tr {
+        background-color: var(--table-row-bg);
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: var(--table-row-alt-bg);
+    }
+
+    tbody tr:hover {
+        background-color: var(--table-row-hover-bg);
+        cursor: pointer;
+    }
+
+    tbody tr button i {
+        background-color: transparent;
+        border: none;
+        color: #212529;
+        cursor: pointer;
+    }
+
     tbody td:first-child {
         position: sticky;
         left: 0;
         z-index: 10;
-    }
-
-    #citaciTableContainer thead tr th {
-        text-transform: uppercase;
-        font-size: 1rem;
     }
 
     .pagination {
@@ -58,8 +68,9 @@ require base_path("app/views/inc/header.php") ?>
 
     .page-btn {
         padding: 6px 12px;
-        border: 1px solid #ccc;
-        background: white;
+        border: 1px solid var(--pagination-border);
+        background: var(--pagination-bg);
+        color: var(--text-primary);
         cursor: pointer;
         min-width: 36px;
         text-align: center;
@@ -67,13 +78,13 @@ require base_path("app/views/inc/header.php") ?>
     }
 
     .page-btn:hover {
-        background-color: #f0f0f0;
+        background-color: var(--pagination-hover-bg);
     }
 
     .page-btn.active {
-        background-color: #212529;
-        color: white;
-        border-color: #212529;
+        background-color: var(--pagination-active-bg);
+        color: var(--pagination-active-text);
+        border-color: var(--pagination-active-bg);
     }
 
     .page-btn:disabled {
@@ -96,17 +107,108 @@ require base_path("app/views/inc/header.php") ?>
         top: 50%;
         transform: translateY(-50%);
         font-size: 0.75rem;
-        color: #ccc;
+        color: var(--text-secondary);
     }
 
     th[data-sort].sort-asc::after {
         content: "▲";
-        color: #000;
+        color: var(--text-primary);
     }
 
     th[data-sort].sort-desc::after {
         content: "▼";
-        color: #000;
+        color: var(--text-primary);
+    }
+
+    #search-icon {
+        cursor: pointer;
+        background-color: var(--bg-content);
+    }
+
+    #citaciTableContainer table {
+        width: 100%;
+        table-layout: auto;
+        word-wrap: break-word;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    #citaciTableContainer table thead {
+        position: sticky;
+        top: 0;
+        background-color: var(--table-header-bg);
+        color: var(--table-header-text);
+        z-index: 10;
+    }
+
+    #citaciTableContainer table thead th {
+        text-transform: uppercase;
+        font-size: 1rem;
+    }
+
+    #searchInput,
+    #poStranici {
+        background-color: var(--bg-content);
+        color: var(--text-secondary);
+    }
+
+    #search-icon i,
+    #poStranici {
+        color: var(--text-primary);
+    }
+
+    /* 🎨 Modal stilovi */
+    .modal-content {
+        background-color: var(--bg-content);
+        /* isti background kao ostatak */
+        color: var(--text-primary);
+        border-radius: 8px;
+        border: 1px solid var(--input-border);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid var(--table-border);
+        background-color: var(--bg-main);
+        /* siva kao sekundarna */
+        color: var(--text-primary);
+    }
+
+    .modal-title {
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .modal-footer {
+        border-top: 1px solid var(--table-border);
+        background-color: var(--bg-main);
+    }
+
+    #citacEditBtn {
+        background-color: var(--primary-color);
+        color: var(--btn-primary-text);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    #citacEditBtn:hover {
+        scale: 1.05;
+    }
+
+    #citacModal input.form-control,
+    #citacModal select.form-select,
+    #citacModal textarea.form-control {
+        background-color: var(--input-bg);
+        color: var(--input-text);
+        border: 1px solid var(--input-border);
+    }
+
+    #citacModal input.form-control:focus,
+    #citacModal select.form-select:focus,
+    #citacModal textarea.form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
     }
 </style>
 
@@ -141,7 +243,7 @@ require base_path("app/views/inc/header.php") ?>
                     placeholder="<?= Lang::get('common.search') ?>"
                     aria-label="Search"
                     aria-describedby="search-icon" />
-                <span class="input-group-text bg-white border-start-0" id="search-icon" style="cursor: pointer;">
+                <span class="input-group-text border-start-0" id="search-icon">
                     <i class="fas fa-search"></i>
                 </span>
             </div>
@@ -151,9 +253,9 @@ require base_path("app/views/inc/header.php") ?>
         </div>
 
 
-        <div style="max-height: 75vh; overflow-y: auto; overflow-x: auto; width: 100%;" class="mt-3" id="citaciTableContainer">
-            <table class="table table-bordered table-striped w-100 table-hover" style="table-layout: fixed; word-wrap: break-word;" id="citaciTable">
-                <thead class="table-dark text-center align-middle">
+        <div class="mt-3" id="citaciTableContainer">
+            <table class="table w-100" id="citaciTable">
+                <thead class="text-center align-middle">
                     <tr>
                         <th rowspan="3" colspan="1" data-sort="id_citaca"><?= Lang::get("reader.table.id") ?> <span class="sort-icon"></span></th>
                         <th rowspan="3" colspan="1" data-sort="opis_citaca"><?= Lang::get("reader.table.description") ?></th>
@@ -208,9 +310,9 @@ require base_path("app/views/inc/header.php") ?>
                 </div>
             </div>
             <div class="col-md-4 text-end">
-                <div class="table-info-summary text-lowercase text-muted">
-                    <span class="fw-bold text-dark" id="showedNumber">1–5</span>
-                    <?= Lang::get("common.of") ?> <span id="totalNumber">25</span>
+                <div class="table-info-summary text-lowercase">
+                    <span class="fw-bold" id="showedNumber"></span>
+                    <?= Lang::get("common.of") ?> <span id="totalNumber"></span>
                 </div>
             </div>
 
@@ -219,6 +321,7 @@ require base_path("app/views/inc/header.php") ?>
 
     </div>
 </div>
+
 <div class="container mt-5">
     <div class="modal fade" id="citacModal" tabindex="-1" aria-labelledby="citacModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -239,8 +342,8 @@ require base_path("app/views/inc/header.php") ?>
                         <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.id") ?></label>
                             <input type="text" class="form-control" id="id_citaca">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -254,50 +357,50 @@ require base_path("app/views/inc/header.php") ?>
                         <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.serial_number_reader") ?></label>
                             <input type="text" class="form-control" id="sn_citaca">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.serial_number_barrier") ?></label>
                             <input type="text" class="form-control" id="sn_barijere">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.delay_time") ?></label>
                             <input type="text" class="form-control" id="delay">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.delay_sensor") ?></label>
                             <input type="text" class="form-control" id="delay_senzora">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label"><?= Lang::get("reader.form.labels.description") ?></label>
                             <input type="text" class="form-control" id="opis_citaca">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.lockers_number") ?></label>
                             <input type="number" class="form-control" id="broj_ormarica">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.lockers_rows") ?></label>
                             <input type="number" class="form-control" id="broj_redova_ormarica">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                         <div class="col-md-2 d-flex align-items-center">
@@ -309,8 +412,8 @@ require base_path("app/views/inc/header.php") ?>
                         <div class="col-md-3">
                             <label class="form-label"><?= Lang::get("reader.form.labels.ip_address") ?></label>
                             <input type="text" class="form-control" id="ip_address">
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
 
@@ -318,8 +421,8 @@ require base_path("app/views/inc/header.php") ?>
                             <label class="form-label"><?= Lang::get("reader.form.labels.lockers_ids") ?></label>
                             <textarea class="form-control" rows="3" id="brojevi_ormarica"></textarea>
                             <div class="form-text text-danger"><?= Lang::get("reader.form.textarea_help") ?></div>
-                            <div class="form-text text-danger error-message" style="display: none;">
-                                <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                            <div class="form-text text-danger error-message">
+                                <ul></ul>
                             </div>
                         </div>
                     </div>
@@ -350,7 +453,7 @@ require base_path("app/views/inc/header.php") ?>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-blue" id="citacEditBtn"><?= Lang::get("common.edit") ?></button>
+                    <button class="btn" id="citacEditBtn"><?= Lang::get("common.edit") ?></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= Lang::get("common.close") ?></button>
                 </div>
             </div>

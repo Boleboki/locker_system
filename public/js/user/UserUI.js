@@ -103,10 +103,9 @@ export class UserUI {
    */
   static displayError(errorField, messages) {
     const ul = errorField.querySelector("ul");
-    ul.innerHTML = ""; // Čisti prethodne greške
-    errorField.style.display = "block"; // Prikazuje polje za greške
+    ul.innerHTML = "";
+    errorField.classList.add("visible");
 
-    // Dodaje svaku poruku kao listu u ul element
     messages.forEach((msg) => {
       const li = document.createElement("li");
       li.textContent = msg;

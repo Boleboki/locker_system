@@ -6,48 +6,92 @@ use App\Core\LangKey;
 ?>
 
 <style>
-  .nav-link {
+  /* ===============================
+   Navbar CSS
+=============================== */
+
+  /* Osnovni navbar */
+  #mainNav {
+    background-color: var(--navbar-bg);
+    color: var(--navbar-text);
+  }
+
+  /* Brand */
+  #mainNav .navbar-brand {
+    font-weight: bold;
+    color: var(--navbar-text);
+    transition: scale 0.2s ease-in-out, color 0.2s ease-in-out;
+  }
+
+  #mainNav .navbar-brand:hover {
+    scale: 1.05;
+    color: var(--white);
+  }
+
+  #mainNav .navbar-brand:hover .version {
+    color: var(--white);
+  }
+
+  /* Version unutar branda */
+  #mainNav .version {
+    text-align: right;
+    font-size: 0.6rem;
+    margin: 0;
+    color: var(--navbar-text);
+    transition: color 0.2s ease-in-out;
+  }
+
+  /* Nav linkovi */
+  #mainNav .nav-link {
+    color: var(--navbar-text);
     position: relative;
     transition: all 0.2s ease-in-out;
   }
 
-  .nav-link:hover {
+  #mainNav .nav-link:hover,
+  #mainNav .nav-link:focus {
+    color: var(--white);
     transform: scale(1.1);
-    color: #fff !important;
   }
 
-  .nav-link::after {
-    display: none !important;
-  }
-
-  .dropdown-menu {
-    background-color: #212529;
+  /* Dropdown menu */
+  #mainNav .dropdown-menu {
+    background-color: var(--navbar-bg);
     border: none;
     border-radius: 8px;
     padding: 0.5rem 0;
   }
 
-  .dropdown-menu .dropdown-item {
-    color: #fff;
+  /* Dropdown items */
+  #mainNav .dropdown-item {
+    color: var(--navbar-text);
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  .dropdown-menu .dropdown-item:hover,
-  .dropdown-menu.show .dropdown-item {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
+  #mainNav .navbar-toggler i {
+    color: var(--navbar-text);
+    font-size: 1.5rem;
+    transition: all 0.3s ease-in-out;
   }
 
-  .btn-outline-light:hover {
-    background-color: #dc3545;
-    border-color: #dc3545;
+  #mainNav .navbar-toggler:hover i,
+  #mainNav .navbar-toggler:focus i {
+    transform: scale(1.1);
   }
 
-  .dropdown-submenu {
+  #mainNav .dropdown-item:hover,
+  #mainNav .dropdown-item:focus,
+  #mainNav .dropdown-menu.show .dropdown-item {
+    background-color: var(--navbar-bg-light);
+    color: var(--white);
+  }
+
+  /* Submenu dropdown */
+  #mainNav .dropdown-submenu {
     position: relative;
   }
 
-  .dropdown-submenu>.dropdown-menu {
+  #mainNav .dropdown-submenu>.dropdown-menu {
     top: 0;
     left: 100%;
     margin-left: 0.1rem;
@@ -56,25 +100,67 @@ use App\Core\LangKey;
     position: absolute;
   }
 
-  .dropdown-submenu:hover>.dropdown-menu {
+  #mainNav .dropdown-submenu:hover>.dropdown-menu {
     display: block;
   }
 
-  .version {
-    text-align: right;
-    font-size: 0.6rem;
-    margin: 0;
+  /* Dugmad u navbaru */
+  #mainNav .btn-outline-light {
+    color: var(--navbar-text);
+    background-color: transparent;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, scale 0.2s ease-in-out;
+  }
+
+  #mainNav .btn-outline-light:hover {
+    background-color: var(--danger-color);
+    color: #fff;
+    scale: 1.05;
+  }
+
+  /* Sakrivanje default ikonica u nav-link ako ima ::after */
+  #mainNav .nav-link::after {
+    display: none !important;
+  }
+
+  .btn-theme-toggle {
+    border: none;
+    background: var(--navbar-bg);
+    color: var(--navbar-text);
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+  }
+
+  .btn-theme-toggle:hover {
+    background: var(--navbar-bg-light);
+    color: var(--white);
+    transform: scale(1.1);
+  }
+
+  .btn-theme-toggle i {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Animacija promene ikone */
+  .rotate {
+    transform: rotate(180deg);
+    opacity: 0.5;
   }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg" id="mainNav">
   <div class="container">
     <a class="navbar-brand" href="<?= url('/') ?>">Ormarići <br>
       <p class="version"></p>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
-      <span class="navbar-toggler-icon"></span>
+      <i class="fa-solid fa-bars"></i>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -104,6 +190,7 @@ use App\Core\LangKey;
               </li>
             </ul>
           </li>
+
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -151,10 +238,14 @@ use App\Core\LangKey;
           </li>
         <?php endif; ?>
       </ul>
-
-      <button class="btn btn-outline-light" type="button" id="logoutBtn">
-        <?= Lang::get('nav.logout') ?>
-      </button>
+      <div class="d-flex align-items-center">
+        <button id="toggleThemeBtn" class="btn btn-theme-toggle">
+          <i id="themeIcon" class="fas fa-sun"></i>
+        </button>
+        <button class="btn btn-outline-light" type="button" id="logoutBtn">
+          <?= Lang::get('nav.logout') ?>
+        </button>
+      </div>
     </div>
   </div>
 </nav>

@@ -74,7 +74,7 @@ export function initializeConfigurationEvents() {
         showAlert(data.message, "success");
       } catch (err) {
         // Ako dođe do greške prilikom poziva ili mreže, prikazuje alert i loguje grešku
-        showAlert("Error editing configuration: " + err, "danger");
+        showAlert("Error editing configuration", "danger", null);
         console.error("Error editing configuration: ", err);
       }
     }

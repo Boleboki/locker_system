@@ -20,5 +20,5 @@
   "validator.max": "Vrednost mora biti manja ili jednaka {{compareTo}}.",
   "validator.intCommaSeparator": "Polje mora biti u formatu: brojevi odvojeni zarezima (npr. 123,412,512).",
   "validator.specialCharacters": "Polje ne sme da sadrži specijalne karaktere.",
-  "validator.DBduplicate": "This value is already registered."
+  "validator.DBduplicate": "Ovaj podatak već postoji."
 }

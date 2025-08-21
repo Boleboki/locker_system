@@ -27,9 +27,8 @@ export class AuthUI {
     // Čisti prethodne poruke iz liste
     ul.innerHTML = "";
 
-    // Prikazuje kontejner (u slučaju da je prethodno bio skriven)
-    errorField.style.display = "block";
-
+    errorField.classList.add("visible");
+    errorField.style.display = "block"; // Osigurava da je element vidljiv
     // Za svaku poruku kreira <li> element i dodaje ga u <ul>
     messages.forEach((msg) => {
       const li = document.createElement("li");

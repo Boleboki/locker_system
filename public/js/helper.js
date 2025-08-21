@@ -22,7 +22,7 @@ export const onClickIfExists = (elementId, callback) => {
 // message - tekst poruke koja će biti prikazana
 // type - tip poruke (default je "success", može biti "danger", "warning", itd.)
 // Poruka se prikazuje u elementu sa ID "alertBox", a zatim automatski nestaje posle 3 sekunde.
-export const showAlert = (message, type = "success") => {
+export const showAlert = (message, type = "success", time = 3) => {
   const alertBox = document.getElementById("alertBox");
   alertBox.innerHTML = `
     <div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -31,14 +31,15 @@ export const showAlert = (message, type = "success") => {
     </div>
   `;
 
-  // Nakon 3 sekunde, uklanja alert sa stranice
+  if (!time || time <= 0) return;
+
   setTimeout(() => {
     const alert = alertBox.querySelector(".alert");
     if (alert) {
       alert.classList.remove("show");
       alert.remove();
     }
-  }, 3000);
+  }, time * 1000);
 };
 
 export const url = (path) => {

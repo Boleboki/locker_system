@@ -80,6 +80,9 @@ class Lang
                 ? json_decode(file_get_contents($path), true)
                 : [];
         }
+        if (!isset(self::$translations[$locale][$filePath][$key])) {
+            return $key;
+        }
         $translation = self::$translations[$locale][$filePath][$key];
 
         // Zamenjuje placeholder-e u prevodu sa prosleđenim vrednostima
@@ -87,8 +90,7 @@ class Lang
             $translation = str_replace(":" . $k, $v, $translation);
         }
 
-        // Ako je rezultat string, vraća prevod, inače vraća ključ
-        return is_string($translation) ? $translation : $key;
+        return $translation;
     }
 
     /**
@@ -109,7 +111,6 @@ class Lang
         // Ako fajl još nije učitan, pokušaj da ga učitaš
         if (!isset(self::$translations[$locale][$file])) {
             $path = base_path("lang/{$locale}/{$file}.json");
-
             // Ako fajl postoji, uključuje ga; u suprotnom prazno
             self::$translations[$locale][$file] = file_exists($path)
                 ? json_decode(file_get_contents($path), true)

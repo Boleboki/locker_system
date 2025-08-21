@@ -63,9 +63,8 @@ export function initializeAuthEvents() {
           window.location.href = response.redirect;
         }
       } catch (err) {
-        // Uhvati sve greške vezane za komunikaciju sa serverom
+        showAlert("Error logging in", "danger", null);
         console.error("Error logging in: ", err);
-        showAlert("Error logging in: " + err, "danger"); // Prikaz upozorenja
       }
     }
   });
@@ -79,9 +78,8 @@ export function initializeAuthEvents() {
       // Ako server vraća redirect (npr. nazad na login stranicu)
       if (response.redirect) window.location.href = response.redirect;
     } catch (err) {
-      // Obrada grešaka prilikom logout-a
+      showAlert("Error logout", "danger", null);
       console.error("Error logout: ", err);
-      showAlert("Error logout: " + err, "danger");
     }
   });
 }

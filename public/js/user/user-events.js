@@ -58,7 +58,7 @@ export function initializeUserEvents() {
         showAlert(response.error, "danger");
       }
     } catch (err) {
-      showAlert("Error deleting user: " + err, "danger");
+      showAlert("Error deleting user", "danger", 0);
       console.error("Error deleting user: ", e);
     }
   });
@@ -94,7 +94,7 @@ export function initializeUserEvents() {
       // Prikaz uspešne poruke
       showAlert(response.message, "success");
     } catch (e) {
-      showAlert("Error editing user: " + e, "danger");
+      showAlert("Error editing user", "danger", null);
       console.log("Error editing user: ", e);
     }
   });
@@ -125,7 +125,7 @@ export function initializeUserEvents() {
         }
         showAlert(response.message, "success");
       } catch (e) {
-        showAlert("Error adding user: " + e, "danger");
+        showAlert("Error adding user", "danger", null);
         console.error("Error adding user: ", e);
       }
     }
@@ -159,7 +159,7 @@ export function initializeUserEvents() {
       UserUI.closeResetPasswordModal();
       showAlert(response.message, "success");
     } catch (err) {
-      showAlert("Error updating password: " + e, "danger");
+      showAlert("Error updating password", "danger", null);
       console.error("Error updating password:", err);
     }
   });

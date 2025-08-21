@@ -71,12 +71,12 @@ export class CitaciUI {
     cells[i++].textContent = data.id_citaca ?? "";
     cells[i++].textContent = data.opis_citaca ?? "";
     cells[i++].textContent = data.tip_citaca ?? "";
-    cells[i++].textContent = data.aktivan == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_radno_vreme == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_kontrolu_pristupa == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_ormarice == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_grupu_ormarica == 1 ? "Da" : "Ne";
-    cells[i++].textContent = data.citac_za_odjavu == 1 ? "Da" : "Ne";
+    cells[i++].textContent = data.aktivan;
+    cells[i++].textContent = data.citac_za_radno_vreme;
+    cells[i++].textContent = data.citac_za_kontrolu_pristupa;
+    cells[i++].textContent = data.citac_za_ormarice;
+    cells[i++].textContent = data.citac_za_grupu_ormarica;
+    cells[i++].textContent = data.citac_za_odjavu;
     cells[i++].textContent = data.delay ?? "";
     cells[i++].textContent = data.delay_senzora ?? "";
     cells[i++].textContent = data.sn_citaca ?? "";
@@ -84,7 +84,7 @@ export class CitaciUI {
     cells[i++].textContent = data.ip_address ?? "";
     cells[i++].textContent = data.broj_ormarica ?? "";
     cells[i++].textContent = data.broj_redova_ormarica ?? "";
-    cells[i++].textContent = data.brojevi_ormarica_po_indexu == 1 ? "Da" : "Ne";
+    cells[i++].textContent = data.brojevi_ormarica_po_indexu;
   }
 
   /**
@@ -335,9 +335,10 @@ export class CitaciUI {
   }
   static filterTableData(data = this.tableData) {
     if (!this.searchValue) return this.tableData;
+    const searchValue = this.searchValue.toLowerCase();
     return data.filter((item) => {
       return Object.values(item).some((value) =>
-        String(value).toLowerCase().includes(this.searchValue.toLowerCase())
+        String(value).toLowerCase().includes(searchValue)
       );
     });
   }
@@ -357,12 +358,6 @@ export class CitaciUI {
       Math.ceil(filteredData.length / this.pageSize),
       filteredData
     );
-    const t = window.translations || {
-      yes: "Yes",
-      no: "No",
-      edit: "Edit",
-      delete: "Delete",
-    };
 
     finalData.forEach((item) => {
       const row = document.createElement("tr");
@@ -382,18 +377,12 @@ export class CitaciUI {
       row.appendChild(createCell(item.id_citaca));
       row.appendChild(createCell(item.opis_citaca));
       row.appendChild(createCell(item.tip_citaca));
-      row.appendChild(createCell(item.aktivan == 1 ? t.yes : t.no));
-      row.appendChild(
-        createCell(item.citac_za_radno_vreme == 1 ? t.yes : t.no)
-      );
-      row.appendChild(
-        createCell(item.citac_za_kontrolu_pristupa == 1 ? t.yes : t.no)
-      );
-      row.appendChild(createCell(item.citac_za_ormarice == 1 ? t.yes : t.no));
-      row.appendChild(
-        createCell(item.citac_za_grupu_ormarica == 1 ? t.yes : t.no)
-      );
-      row.appendChild(createCell(item.citac_za_odjavu == 1 ? t.yes : t.no));
+      row.appendChild(createCell(item.aktivan));
+      row.appendChild(createCell(item.citac_za_radno_vreme));
+      row.appendChild(createCell(item.citac_za_kontrolu_pristupa));
+      row.appendChild(createCell(item.citac_za_ormarice));
+      row.appendChild(createCell(item.citac_za_grupu_ormarica));
+      row.appendChild(createCell(item.citac_za_odjavu));
       row.appendChild(createCell(item.delay));
       row.appendChild(createCell(item.delay_senzora));
       row.appendChild(createCell(item.sn_citaca));
@@ -401,15 +390,13 @@ export class CitaciUI {
       row.appendChild(createCell(item.ip_address)); // dodatno, ako ti treba
       row.appendChild(createCell(item.broj_ormarica));
       row.appendChild(createCell(item.broj_redova_ormarica));
-      row.appendChild(
-        createCell(item.brojevi_ormarica_po_indexu == 1 ? t.yes : t.no)
-      );
+      row.appendChild(createCell(item.brojevi_ormarica_po_indexu));
 
       // Edit dugme
       const editTd = document.createElement("td");
       editTd.className = "text-center align-middle p-3";
       const editBtn = document.createElement("button");
-      editBtn.className = "btn btn-primary";
+      editBtn.className = "btn btn-warning";
       editBtn.id = "citaci-edit-btn";
       editBtn.dataset.id = item.id_citaca;
       editBtn.innerHTML = `<i class="fa-solid fa-pencil"></i>`;
@@ -443,7 +430,7 @@ export class CitaciUI {
     if (!ul) return;
     ul.innerHTML = "";
 
-    errorField.style.display = "block";
+    errorField.classList.add("visible");
 
     messages.forEach((msg) => {
       const li = document.createElement("li");

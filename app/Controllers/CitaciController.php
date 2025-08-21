@@ -84,6 +84,11 @@ class CitaciController
         }
     }
 
+    /**
+     * Vraća sve čitače u JSON formatu, sa opcionalnim sortiranjem i filtriranjem.
+     *
+     * @return void - Odgovor je JSON objekat sa listom čitača
+     */
     public function getAll()
     {
         try {
@@ -156,7 +161,7 @@ class CitaciController
                 $v->addError("id_citaca", Lang::get("validator.DBduplicate"));
             }
             $v->validate($data, [
-                'id_citaca' => v::notEmpty()->addRule(v::intVal()),
+                'id_citaca' => v::notEmpty()->addRule(v::intVal()->min(0)),
                 'opis_citaca' => $v->optionalIfFilled(v::alnum(' ', '-')->length(1, 50)),
                 'delay' => $v->optionalIfFilled(v::intVal()->min(0)),
                 'sn_citaca' => v::notEmpty()->addRule(v::intVal()->min(0)),
@@ -168,6 +173,7 @@ class CitaciController
                 'ip_address' => $v->optionalIfFilled(v::ip())
             ]);
             if ($v->hasErrors()) {
+                Logger::warning(Logger::translate('logs.citaci.store.validation_failed', ['errors' => json_encode($v->getErrors())]));
                 echo json_encode(['success' => false, 'errors' => $v->getErrors()]);
                 return;
             }
@@ -217,6 +223,7 @@ class CitaciController
                 'ip_address' => $v->optionalIfFilled(v::ip())
             ]);
             if ($v->hasErrors()) {
+                Logger::warning(Logger::translate('logs.citaci.update.validation_failed', ['id' => $id, 'errors' => json_encode($v->getErrors())]));
                 echo json_encode(['success' => false, 'errors' => $v->getErrors()]);
                 return;
             }

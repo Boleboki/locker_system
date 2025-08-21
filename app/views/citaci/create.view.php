@@ -6,12 +6,8 @@ require base_path("app/views/inc/header.php") ?>
 <?php require base_path("app/views/inc/nav.php") ?>
 
 <style>
-    body {
-        background-color: #e3f2fd;
-    }
-
     .form-section {
-        background-color: #ffffff;
+        background-color: var(--bg-content);
         border-radius: 8px;
         padding: 25px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -19,11 +15,12 @@ require base_path("app/views/inc/header.php") ?>
     }
 
     .section-title {
-        border-bottom: 1px solid #dee2e6;
+        border-bottom: 1px solid var(--table-border);
         margin-bottom: 20px;
         padding-bottom: 10px;
         font-weight: bold;
         font-size: 1.3rem;
+        color: var(--text-primary);
     }
 
     .form-check {
@@ -31,14 +28,36 @@ require base_path("app/views/inc/header.php") ?>
     }
 
     .btn-blue {
-        background-color: #0d6efd;
-        color: white;
+        background-color: var(--primary-color);
+        color: var(--btn-primary-text);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        border: none;
     }
 
     .btn-blue:hover {
-        background-color: #0b5ed7;
+        transform: scale(1.05);
+        transition: all 0.3s ease;
+    }
+
+    input.form-control,
+    select.form-select,
+    textarea.form-control {
+        background-color: var(--input-bg);
+        color: var(--input-text);
+        border: 1px solid var(--input-border);
+    }
+
+
+    input.form-control:focus,
+    select.form-select:focus,
+    textarea.form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
     }
 </style>
+
 
 <div id="alertBox" class="mt-3"></div>
 
@@ -59,8 +78,8 @@ require base_path("app/views/inc/header.php") ?>
             <div class="col-md-2">
                 <label class="form-label"><?= Lang::get('reader.form.labels.id') ?></label>
                 <input type="text" class="form-control" id="id_citaca">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
@@ -76,56 +95,56 @@ require base_path("app/views/inc/header.php") ?>
             <div class="col-md-2">
                 <label class="form-label"><?= Lang::get('reader.form.labels.serial_number_reader') ?></label>
                 <input type="text" class="form-control" id="sn_citaca">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
             <div class="col-md-2">
                 <label class="form-label"><?= Lang::get('reader.form.labels.serial_number_barrier') ?></label>
                 <input type="text" class="form-control" id="sn_barijere">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
             <div class="col-md-2">
                 <label class="form-label"><?= Lang::get('reader.form.labels.delay_time') ?></label>
                 <input type="text" class="form-control" id="delay">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
             <div class="col-md-2">
                 <label class="form-label"><?= Lang::get('reader.form.labels.delay_sensor') ?></label>
                 <input type="text" class="form-control" id="delay_senzora">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
             <div class="col-md-4">
                 <label class="form-label"><?= Lang::get('reader.form.labels.description') ?></label>
                 <input type="text" class="form-control" id="opis_citaca">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
             <div class="col-md-2">
                 <label class="form-label"><?= Lang::get('reader.form.labels.lockers_number') ?></label>
                 <input type="number" class="form-control" id="broj_ormarica">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
             <div class="col-md-2">
                 <label class="form-label"><?= Lang::get('reader.form.labels.lockers_rows') ?></label>
                 <input type="number" class="form-control" id="broj_redova_ormarica">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
@@ -140,16 +159,16 @@ require base_path("app/views/inc/header.php") ?>
             <div class="col-md-3">
                 <label class="form-label"><?= Lang::get("reader.form.labels.ip_address") ?></label>
                 <input type="text" class="form-control" id="ip_address">
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
             <div class="col-12">
                 <label class="form-label"><?= Lang::get('reader.form.labels.lockers_ids') ?></label>
                 <textarea class="form-control" rows="3" id="brojevi_ormarica"></textarea>
                 <div class="form-text text-danger"><?= Lang::get('reader.form.textarea_help') ?></div>
-                <div class="form-text text-danger error-message" style="display: none;">
-                    <ul style="list-style-type: '* '; padding-left: 1rem;"></ul>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
                 </div>
             </div>
 
@@ -197,7 +216,7 @@ require base_path("app/views/inc/header.php") ?>
         </div>
 
         <div class="text-end mt-4">
-            <button class="btn btn-blue" id="citacAddBtn"><?= Lang::get('common.add') ?></button>
+            <button class="btn-blue" id="citacAddBtn"><?= Lang::get('common.add') ?></button>
         </div>
     </div>
 </div>

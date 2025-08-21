@@ -46,7 +46,7 @@ export function initializeCitaciEvents() {
       );
       CitaciUI.renderTable();
     } catch (err) {
-      showAlert("Error getting readers: " + err, "danger");
+      showAlert("Error getting readers", "danger", null);
       console.error("Error getting readers:", err);
     }
   }
@@ -62,10 +62,14 @@ export function initializeCitaciEvents() {
     CitaciUI.renderTable();
   });
   loadAndRenderCitaci();
+  let searchTimeout;
 
   searchInput?.addEventListener("input", (e) => {
-    CitaciUI.setSearchValue(e.target.value);
-    CitaciUI.renderTable();
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      CitaciUI.setSearchValue(e.target.value);
+      CitaciUI.renderTable();
+    }, 300);
   });
 
   /**
@@ -100,7 +104,7 @@ export function initializeCitaciEvents() {
         // Prikaz modala za potvrdu brisanja
         CitaciUI.showConfirmDeleteModal(id, "#" + id);
       } catch (error) {
-        showAlert("Error deleting reader: " + error, "danger");
+        showAlert("Error deleting reader", "danger", null);
         console.error("Error deleting reader:", error);
       }
     }
@@ -113,7 +117,7 @@ export function initializeCitaciEvents() {
         // Otvaranje modala sa podacima za izmenu
         CitaciUI.showEditModal(data);
       } catch (error) {
-        showAlert("Error opening reader editing modal: " + error, "danger");
+        showAlert("Error opening reader editing modal", "danger", null);
         console.error("Error opening reader editing modal:", error);
       }
     }
@@ -140,7 +144,7 @@ export function initializeCitaciEvents() {
         showAlert(response.error, "danger");
       }
     } catch (error) {
-      showAlert("Error deleting reader: " + error, "danger");
+      showAlert("Error deleting reader", "danger", null);
       console.error("Error deleting reader:", error);
     }
   });
@@ -169,8 +173,8 @@ export function initializeCitaciEvents() {
       const response = await CitaciManager.update(row.dataset.id, data);
       CitaciUI.removeErrors();
       if (!response.success) {
-        if (response.serverError) {
-          showAlert(response.serverError, "danger");
+        if (response.error) {
+          showAlert(response.error, "danger");
           CitaciUI.closeEditModal();
           return;
         }
@@ -189,7 +193,7 @@ export function initializeCitaciEvents() {
       CitaciUI.closeEditModal();
     } catch (error) {
       CitaciUI.closeEditModal();
-      showAlert("Error updating reader: " + error, "danger");
+      showAlert("Error updating reader", "danger", null);
       console.error("Error updating reader:", error);
     }
   });
@@ -208,8 +212,8 @@ export function initializeCitaciEvents() {
       // Slanje zahteva za dodavanje novog čitača
       const response = await CitaciManager.add(data);
       if (!response.success) {
-        if (response.serverError) {
-          showAlert(response.serverError, "danger");
+        if (response.error) {
+          showAlert(response.error, "danger");
           CitaciUI.closeEditModal();
           return;
         }
@@ -225,7 +229,7 @@ export function initializeCitaciEvents() {
       showAlert(response.message, "success");
       CitaciUI.formReset();
     } catch (error) {
-      showAlert("Error adding reader: " + error, "danger");
+      showAlert("Error adding reader", "danger", null);
       console.error("Error adding reader:", error);
     }
   });
