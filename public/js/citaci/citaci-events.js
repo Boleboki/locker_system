@@ -218,10 +218,13 @@ export function initializeCitaciEvents() {
           return;
         }
         for (const [field, errors] of Object.entries(response.errors)) {
-          const errorsField = document
-            .getElementById(field)
+          const inputField = document.getElementById(field);
+
+          const errorsField = inputField
             ?.closest("div")
             ?.querySelector(".error-message");
+
+          inputField?.closest(".accordion-collapse")?.classList.add("show");
           CitaciUI.displayError(errorsField, errors);
         }
         return;

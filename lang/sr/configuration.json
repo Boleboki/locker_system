@@ -7,5 +7,6 @@
   "configuration.modal_title": "Detalji konfiguracije",
   "configuration.modal_name": "Ime",
   "configuration.modal_value": "Vrednost",
-  "configuration.modal_description": "Opis"
+  "configuration.modal_description": "Opis",
+  "configuration.unsaved_changes": "Postoje izmene koje nisu sačuvane"
 }

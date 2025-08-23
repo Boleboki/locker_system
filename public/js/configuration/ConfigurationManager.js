@@ -10,6 +10,31 @@
 import { url } from "../helper.js";
 export class ConfigurationManager {
   /**
+   * Dohvata sve konfiguracione stavke sa servera.
+   *
+   * @returns {Promise<Array>} - vraća niz konfiguracionih stavki u JSON formatu.
+   * @throws {Error} - baca grešku ako mrežni zahtev nije uspešan.
+   */
+  static async getAll() {
+    try {
+      const response = await fetch(url("/api/podesavanja"), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json", // JSON telo zahteva
+        },
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server error text:", errorText);
+        throw new Error("Server error text: " + errorText);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching configurations:", error);
+      throw error;
+    }
+  }
+  /**
    * Ažurira vrednost konfiguracione stavke na serveru.
    *
    * @param {string} key - ključ konfiguracione stavke koja se ažurira.

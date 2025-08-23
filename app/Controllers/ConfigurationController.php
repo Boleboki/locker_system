@@ -13,6 +13,9 @@ namespace App\Controllers;
 use App\Core\Lang;
 use App\Models\Configure;
 use App\Core\Logger;
+use App\Core\Validator;
+use Respect\Validation\Validator as v;
+
 
 class ConfigurationController
 {
@@ -49,7 +52,22 @@ class ConfigurationController
             echo json_encode($e->getMessage());
         }
     }
-
+    /**
+     * Vraća sve konfiguracije u JSON formatu.
+     * Ne prima parametre.
+     * Ne vraća eksplicitno ništa, ali ispisuje JSON niz konfiguracija.
+     */
+    public function getAll()
+    {
+        try {
+            $config = $this->configModel->getAll();
+            echo json_encode($config);
+        } catch (\Throwable $e) {
+            Logger::error(Logger::translate("logs.configuration.error_get_all", ['error' => $e->getMessage()]));
+            http_response_code(500);
+            echo json_encode($e->getMessage());
+        }
+    }
     /**
      * Parsira JSON podatke iz HTTP tela zahteva
      * 
@@ -80,7 +98,16 @@ class ConfigurationController
     {
         try {
             $data = $this->data();
-
+            $v = new Validator();
+            $v->validate($data, [
+                'value' => $v->notEmpty()->addRule(v::length(1, 100))
+            ]);
+            if ($v->hasErrors()) {
+                $errors = $v->getErrors();
+                Logger::warning(Logger::translate("logs.configuration.validation_error", ['key' => $key, 'errors' => json_encode($errors)]));
+                echo json_encode(['success' => false, 'errors' => $errors]);
+                return;
+            }
             $this->configModel->update($key, $data['value']);
 
             Logger::info(Logger::translate("logs.configuration.update_success", ['key' => $key, 'value' => $data['value']]));

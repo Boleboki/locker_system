@@ -48,7 +48,7 @@
   --pagination-bg: #ffffff;
   --pagination-border: #ccc;
   --pagination-hover-bg: #f0f0f0;
-  --pagination-active-bg: #212529;
+  --pagination-active-bg: var(--primary-color);
   --pagination-active-text: #ffffff;
 
   /* ---------- Inputs / Search ---------- */
@@ -68,55 +68,63 @@
 }
 
 .dark-theme {
-  --primary-color: #0d6efd;
-  --primary-hover: #0b5ed7;
-  --secondary-color: #6c757d; /* siva sekundarna boja */
-  --accent-color: #ffc107;
+  --primary-color: #3b82f6; /* svetlija plava */
+  --primary-hover: #2563eb;
+  --secondary-color: #34d399; /* svetlija zelena */
+  --accent-color: #fbbf24; /* topla žuta */
 
-  --bg-main: #121212;
-  --bg-content: #1e1e1e;
-  --navbar-bg: #1c1c1c;
-  --navbar-bg-light: #2c2c2c;
-  --modal-bg: #2c2c2c;
-  --modal-bg-dark: #1e1e1e;
+  /* ---------- Backgrounds ---------- */
+  --bg-main: #2a2d31; /* glavna pozadina (grafit siva) */
+  --bg-content: #353941; /* kartice, boxovi */
+  --navbar-bg: #2f3338; /* navbar */
+  --navbar-bg-light: #3c4149; /* hover dropdown */
+  --modal-bg: #353941;
+  --modal-bg-dark: #2a2d31;
 
-  --text-primary: #e0e0e0;
-  --text-secondary: #a0a0a0;
-  --navbar-text: #ffffff;
-  --modal-text: #e0e0e0;
+  /* ---------- Text ---------- */
+  --text-primary: #f3f4f6; /* svetla siva */
+  --text-secondary: #d1d5db; /* sekundarni tekst */
+  --navbar-text: #f9fafb;
+  --modal-text: #f3f4f6;
   --modal-text-dark: #ffffff;
 
-  --success-color: #198754;
-  --danger-color: #dc3545;
-  --warning-color: #ffc107;
-  --info-color: #0dcaf0;
+  /* ---------- Status colors ---------- */
+  --success-color: #4ade80;
+  --danger-color: #f87171;
+  --warning-color: #facc15;
+  --info-color: #38bdf8;
 
-  --table-header-bg: #121212;
-  --table-header-text: #fff;
-  --table-row-bg: #1e1e1e;
-  --table-row-alt-bg: #121212;
-  --table-row-text: #e0e0e0;
-  --table-row-hover-bg: #2a2a2a;
+  /* ---------- Table ---------- */
+  --table-header-bg: #3c4149;
+  --table-header-text: #f3f4f6;
+  --table-row-bg: #2f3338;
+  --table-row-alt-bg: #353941;
+  --table-row-text: #e5e7eb;
+  --table-row-hover-bg: #454a52;
   --table-border: rgba(255, 255, 255, 0.1);
 
+  /* ---------- Buttons ---------- */
   --btn-primary-bg: var(--primary-color);
   --btn-primary-text: #ffffff;
   --btn-secondary-bg: var(--secondary-color);
   --btn-secondary-text: #ffffff;
 
-  --pagination-bg: #1e1e1e;
+  /* ---------- Pagination ---------- */
+  --pagination-bg: #353941;
   --pagination-border: #555;
-  --pagination-hover-bg: #2a2a2a;
-  --pagination-active-bg: #121212;
+  --pagination-hover-bg: #454a52;
+  --pagination-active-bg: var(--primary-color);
   --pagination-active-text: #ffffff;
 
-  --input-bg: #2c2c2c;
-  --input-text: #e0e0e0;
+  /* ---------- Inputs ---------- */
+  --input-bg: #3c4149;
+  --input-text: #f3f4f6;
   --input-border: #555;
 
-  --accent-hover: #ffd633;
+  /* ---------- Misc ---------- */
+  --accent-hover: #fcd34d;
 
-  --scrollbar-bg: #2c2c2c;
+  --scrollbar-bg: #2a2d31;
   --scrollbar-thumb: #555;
   --scrollbar-thumb-hover: #777;
 }

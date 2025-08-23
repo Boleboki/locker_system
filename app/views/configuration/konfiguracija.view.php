@@ -99,7 +99,7 @@ require base_path("app/views/inc/header.php") ?>
         color: var(--text-secondary);
     }
 
-    #modalValue {
+    #value {
         display: block;
         width: 100%;
         background-color: var(--input-bg);
@@ -111,7 +111,7 @@ require base_path("app/views/inc/header.php") ?>
         word-break: break-word;
     }
 
-    #modalValue:focus {
+    #value:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
@@ -136,6 +136,123 @@ require base_path("app/views/inc/header.php") ?>
     #editBtn:hover {
         transform: scale(1.05);
     }
+
+    #editModal .error-message {
+        min-height: 1rem;
+    }
+
+    #unsavedWarning {
+        display: none;
+        margin-top: 15px;
+        padding: 12px 15px;
+        border: 1px solid var(--danger-color);
+        border-radius: 6px;
+        background-color: rgba(220, 53, 69, 0.1);
+        /* providna varijanta danger */
+        color: var(--danger-color);
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    #unsavedWarning button {
+        margin-top: 10px;
+        margin-right: 8px;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+    }
+
+    #discardBtn {
+        background-color: var(--text-secondary);
+        color: var(--btn-secondary-text);
+    }
+
+    #discardBtn:hover {
+        transform: scale(1.1);
+        /* tamnija nijansa secondary */
+    }
+
+    #saveBtn {
+        background-color: var(--btn-primary-bg);
+        color: var(--btn-primary-text);
+    }
+
+    #saveBtn:hover {
+        transform: scale(1.1);
+        background-color: var(--primary-hover);
+    }
+
+    #search-icon {
+        cursor: pointer;
+        background-color: var(--bg-content);
+    }
+
+    #citaciTableContainer table {
+        width: 100%;
+        table-layout: auto;
+        word-wrap: break-word;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    #citaciTableContainer table thead {
+        position: sticky;
+        top: 0;
+        background-color: var(--table-header-bg);
+        color: var(--table-header-text);
+        z-index: 10;
+    }
+
+    #citaciTableContainer table thead th {
+        text-transform: uppercase;
+        font-size: 1rem;
+    }
+
+    #searchInput,
+    #poStranici {
+        background-color: var(--bg-content);
+        color: var(--text-secondary);
+    }
+
+    #search-icon i,
+    #poStranici {
+        color: var(--text-primary);
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .page-btn {
+        padding: 6px 12px;
+        border: 1px solid var(--pagination-border);
+        background: var(--pagination-bg);
+        color: var(--text-primary);
+        cursor: pointer;
+        min-width: 36px;
+        text-align: center;
+        border-radius: 4px;
+    }
+
+    .page-btn:hover {
+        background-color: var(--pagination-hover-bg);
+    }
+
+    .page-btn.active {
+        background-color: var(--pagination-active-bg);
+        color: var(--pagination-active-text);
+        border-color: var(--pagination-active-bg);
+    }
+
+    .page-btn:disabled {
+        cursor: not-allowed;
+    }
 </style>
 
 
@@ -143,8 +260,23 @@ require base_path("app/views/inc/header.php") ?>
 
 <div class="config-container">
     <h2 class="config-title"><?= Lang::get('configuration.page_title') ?></h2>
+    <div class="d-flex justify-content-center">
 
-    <div class="config-table-wrapper" id="configTableContainer">
+        <div class="input-group" style="max-width: 400px">
+            <input
+                type="text"
+                id="searchInput"
+                class="form-control border-end-0"
+                placeholder="<?= Lang::get('common.search') ?>"
+                aria-label="Search"
+                aria-describedby="search-icon" />
+            <span class="input-group-text border-start-0" id="search-icon">
+                <i class="fas fa-search"></i>
+            </span>
+        </div>
+    </div>
+    <div class="config-table-wrapper mt-3" id="configTableContainer">
+
         <table class="config-table">
             <thead>
                 <tr>
@@ -155,16 +287,32 @@ require base_path("app/views/inc/header.php") ?>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($config as $item): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($item['name']) ?></td>
-                        <td><?= htmlspecialchars($item['par']) ?></td>
-                        <td><?= htmlspecialchars($item['opis']) ?></td>
-                        <td><?= htmlspecialchars($item['tip']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
+    <div class="mt-3 flex-wrap row" id="paginationContainer">
+        <div class="col-md-4">
+            <label class="form-label mb-0">Prikaži po strani:
+                <select id="poStranici" class="form-select d-inline w-auto">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+            </label>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="pagination">
+
+            </div>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="table-info-summary text-lowercase">
+                <span class="fw-bold" id="showedNumber"></span>
+                <?= Lang::get("common.of") ?> <span id="totalNumber"></span>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -177,18 +325,31 @@ require base_path("app/views/inc/header.php") ?>
             <span class="close-btn">&times;</span>
         </div>
         <div class="modal-body">
-            <p><strong><?= Lang::get('configuration.modal_name') ?>:</strong> <span id="modalKey"></span></p>
-            <p>
+            <div><strong><?= Lang::get('configuration.modal_name') ?>:</strong> <span id="modalKey"></span></div>
+            <div class="mt-3">
                 <strong><?= Lang::get('configuration.modal_value') ?>:</strong>
-                <span id="modalValue" contenteditable="true"></span>
-            </p>
-            <p><strong><?= Lang::get('configuration.modal_description') ?>:</strong> <span id="modalDescription"></span></p>
+                <span id="value" contenteditable="true" class="mt-1"></span>
+                <div class="form-text text-danger error-message">
+                    <ul></ul>
+                </div>
+            </div>
+
+            <div><strong><?= Lang::get('configuration.modal_description') ?>:</strong>
+                <span id="modalDescription"></span>
+            </div>
+
+            <div id="unsavedWarning">
+                <?= Lang::get('configuration.unsaved_changes') ?> <br>
+                <button id="discardBtn"><?= Lang::get('common.discard') ?></button>
+                <button id="saveBtn"><?= Lang::get('common.save') ?></button>
+            </div>
         </div>
         <div class="modal-footer">
             <button id="editBtn"><?= Lang::get('common.edit') ?></button>
         </div>
     </div>
 </div>
+
 
 
 <?php require base_path("app/views/inc/footer.php") ?>

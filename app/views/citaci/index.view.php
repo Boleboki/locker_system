@@ -28,9 +28,12 @@ require base_path("app/views/inc/header.php") ?>
     th,
     td {
         padding: 12px 15px;
-        border: 1px solid var(--table-border);
         text-align: center;
         vertical-align: middle;
+    }
+
+    tbody td {
+        border: 1px solid var(--table-border);
     }
 
     tbody tr {
@@ -56,7 +59,6 @@ require base_path("app/views/inc/header.php") ?>
     tbody td:first-child {
         position: sticky;
         left: 0;
-        z-index: 10;
     }
 
     .pagination {
@@ -112,12 +114,12 @@ require base_path("app/views/inc/header.php") ?>
 
     th[data-sort].sort-asc::after {
         content: "▲";
-        color: var(--text-primary);
+        color: var(--table-header-text);
     }
 
     th[data-sort].sort-desc::after {
         content: "▼";
-        color: var(--text-primary);
+        color: var(--table-header-text);
     }
 
     #search-icon {
@@ -144,6 +146,7 @@ require base_path("app/views/inc/header.php") ?>
     #citaciTableContainer table thead th {
         text-transform: uppercase;
         font-size: 1rem;
+        border: none;
     }
 
     #searchInput,

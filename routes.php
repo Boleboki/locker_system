@@ -24,6 +24,8 @@ Router::get("/test", "PageController@test")->only(Auth::class);
 
 Router::get("/podesavanja", "ConfigurationController@index")->only(Admin::class);
 Router::put("/podesavanja/{key}", "ConfigurationController@update")->only(Admin::class);
+Router::get("/api/podesavanja", "ConfigurationController@getAll")->only(Admin::class);
+
 
 Router::get("/citaci", "CitaciController@index")->only(Admin::class);
 Router::get("/api/citaci", "CitaciController@getAll")->only(Admin::class);

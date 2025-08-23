@@ -59,5 +59,10 @@
   "reader.form.checkboxes.for_lockers_group": "for locker group",
   "reader.form.checkboxes.for_logout": "for logout",
 
-  "reader.form.textarea_help": "*use a comma to separate locker numbers"
+  "reader.form.textarea_help": "*use a comma to separate locker numbers",
+
+  "reader.form.sections.basic_info": "Basic Information",
+  "reader.form.sections.serials": "Serial Numbers",
+  "reader.form.sections.timing": "Timing Settings",
+  "reader.form.sections.lockers": "Lockers"
 }

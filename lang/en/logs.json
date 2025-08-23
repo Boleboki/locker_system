@@ -29,6 +29,7 @@
   "logs.configuration.error_update": "Error updating configuration with key ':key': :error",
   "logs.configuration.delete_success": "Configuration with key ':key' successfully deleted",
   "logs.configuration.error_delete": "Error deleting configuration with key ':key': :error",
+  "logs.configuration.validation_error": "Validation error for configuration with key ':key': :errors",
 
   "logs.users.error_show_index": "Error displaying users: :error",
   "logs.users.error_show_create": "Error displaying user form: :error",

@@ -30,6 +30,7 @@
   "logs.configuration.error_update": "Greška prilikom ažuriranja konfiguracije sa ključem ':key': :error",
   "logs.configuration.delete_success": "Konfiguracija sa ključem ':key' uspešno obrisana",
   "logs.configuration.error_delete": "Greška prilikom brisanja konfiguracije sa ključem ':key': :error",
+  "logs.configuration.validation_error": "Greška u validaciji konfiguracije sa ključem ':key': :errors",
 
   "logs.users.error_show_index": "Greška prilikom prikaza korisnika: :error",
   "logs.users.error_show_create": "Greška prilikom prikaza forme za korisnika: :error",

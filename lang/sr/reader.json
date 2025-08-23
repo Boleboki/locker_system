@@ -58,5 +58,10 @@
   "reader.form.checkboxes.for_lockers_group": "za grupu ormarića",
   "reader.form.checkboxes.for_logout": "za odjavu",
 
-  "reader.form.textarea_help": "*koristite zarez za odvajanje ormarića"
+  "reader.form.textarea_help": "*koristite zarez za odvajanje ormarića",
+
+  "reader.form.sections.basic_info": "Osnovni podaci",
+  "reader.form.sections.serials": "Serijski brojevi",
+  "reader.form.sections.timing": "Vremenska podešavanja",
+  "reader.form.sections.lockers": "Ormarići"
 }

@@ -7,5 +7,6 @@
   "configuration.modal_title": "Configuration Details",
   "configuration.modal_name": "Name",
   "configuration.modal_value": "Value",
-  "configuration.modal_description": "Description"
+  "configuration.modal_description": "Description",
+  "configuration.unsaved_changes": "You have unsaved changes"
 }

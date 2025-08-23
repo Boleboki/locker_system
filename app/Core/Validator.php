@@ -137,6 +137,12 @@ class Validator
         );
     }
 
+    public function notEmpty()
+    {
+        return v::not(v::equals(''))->setTemplate(
+            Lang::get("validator.notEmpty")
+        );
+    }
     /**
      * Kreira pravilo koje odbacuje vrednosti sa specijalnim karakterima koji mogu biti XSS.
      * 
