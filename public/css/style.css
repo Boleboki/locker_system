@@ -68,65 +68,65 @@
 }
 
 .dark-theme {
-  --primary-color: #3b82f6; /* svetlija plava */
-  --primary-hover: #2563eb;
-  --secondary-color: #34d399; /* svetlija zelena */
-  --accent-color: #fbbf24; /* topla žuta */
+  --primary-color: #60a5fa; /* svetlija plava */
+  --primary-hover: #3b82f6;
+  --secondary-color: #6ee7b7; /* svetlija zelena */
+  --accent-color: #facc15; /* topla žuta */
 
   /* ---------- Backgrounds ---------- */
-  --bg-main: #2a2d31; /* glavna pozadina (grafit siva) */
-  --bg-content: #353941; /* kartice, boxovi */
-  --navbar-bg: #2f3338; /* navbar */
-  --navbar-bg-light: #3c4149; /* hover dropdown */
-  --modal-bg: #353941;
-  --modal-bg-dark: #2a2d31;
+  --bg-main: #434952; /* glavna pozadina */
+  --bg-content: #4b5160; /* boxovi, kartice */
+  --navbar-bg: #3e4451; /* navbar */
+  --navbar-bg-light: #505767; /* hover dropdown */
+  --modal-bg: #4b5160;
+  --modal-bg-dark: #434952;
 
   /* ---------- Text ---------- */
-  --text-primary: #f3f4f6; /* svetla siva */
-  --text-secondary: #d1d5db; /* sekundarni tekst */
-  --navbar-text: #f9fafb;
-  --modal-text: #f3f4f6;
+  --text-primary: #f9fafb; /* skoro bela */
+  --text-secondary: #6c757d;
+  --navbar-text: #ffffff;
+  --modal-text: #f9fafb;
   --modal-text-dark: #ffffff;
 
   /* ---------- Status colors ---------- */
-  --success-color: #4ade80;
-  --danger-color: #f87171;
-  --warning-color: #facc15;
-  --info-color: #38bdf8;
+  --success-color: #86efac;
+  --danger-color: #ff4d4f;
+  --warning-color: #fde047;
+  --info-color: #7dd3fc;
 
   /* ---------- Table ---------- */
-  --table-header-bg: #3c4149;
-  --table-header-text: #f3f4f6;
-  --table-row-bg: #2f3338;
-  --table-row-alt-bg: #353941;
-  --table-row-text: #e5e7eb;
-  --table-row-hover-bg: #454a52;
-  --table-border: rgba(255, 255, 255, 0.1);
+  --table-header-bg: #505767;
+  --table-header-text: #f9fafb;
+  --table-row-bg: #3e4451;
+  --table-row-alt-bg: #4b5160;
+  --table-row-text: #f3f4f6;
+  --table-row-hover-bg: #5a6273;
+  --table-border: rgba(255, 255, 255, 0.15);
 
   /* ---------- Buttons ---------- */
   --btn-primary-bg: var(--primary-color);
   --btn-primary-text: #ffffff;
   --btn-secondary-bg: var(--secondary-color);
-  --btn-secondary-text: #ffffff;
+  --btn-secondary-text: #000000; /* bolji kontrast */
 
   /* ---------- Pagination ---------- */
-  --pagination-bg: #353941;
-  --pagination-border: #555;
-  --pagination-hover-bg: #454a52;
+  --pagination-bg: #4b5160;
+  --pagination-border: #666;
+  --pagination-hover-bg: #5a6273;
   --pagination-active-bg: var(--primary-color);
   --pagination-active-text: #ffffff;
 
   /* ---------- Inputs ---------- */
-  --input-bg: #3c4149;
-  --input-text: #f3f4f6;
-  --input-border: #555;
+  --input-bg: #505767;
+  --input-text: #f9fafb;
+  --input-border: #666;
 
   /* ---------- Misc ---------- */
-  --accent-hover: #fcd34d;
+  --accent-hover: #fde68a;
 
-  --scrollbar-bg: #2a2d31;
-  --scrollbar-thumb: #555;
-  --scrollbar-thumb-hover: #777;
+  --scrollbar-bg: #434952;
+  --scrollbar-thumb: #666;
+  --scrollbar-thumb-hover: #888;
 }
 
 html body {
@@ -195,9 +195,13 @@ button i,
   outline: none !important;
 }
 
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
 .error-message {
   min-height: 1.5rem;
-  color: var(--danger-color);
+  color: var(--danger-color) !important;
   font-size: 0.875rem;
   visibility: hidden;
 }
@@ -231,8 +235,11 @@ button i,
   background: var(--scrollbar-thumb-hover);
 }
 
-/* Firefox */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+}
+
+.text-danger {
+  color: var(--danger-color) !important;
 }

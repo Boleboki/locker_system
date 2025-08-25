@@ -33,8 +33,13 @@ export function initializeCitaciEvents() {
 
   async function loadAndRenderCitaci() {
     if (!citaciTableContainer || !citaciTableBody) return;
+    const sessionMessage = sessionStorage.getItem("alertMessage");
 
     try {
+      if (sessionMessage) {
+        showAlert(sessionMessage, "success");
+        sessionStorage.removeItem("alertMessage");
+      }
       const response = await CitaciManager.getAll();
       if (!response.success) {
         showAlert(response.error, "danger");
@@ -227,6 +232,11 @@ export function initializeCitaciEvents() {
           inputField?.closest(".accordion-collapse")?.classList.add("show");
           CitaciUI.displayError(errorsField, errors);
         }
+        return;
+      }
+      if (response.redirect) {
+        sessionStorage.setItem("alertMessage", response.message);
+        location.href = response.redirect;
         return;
       }
       showAlert(response.message, "success");

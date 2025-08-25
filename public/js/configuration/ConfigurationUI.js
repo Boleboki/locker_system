@@ -215,13 +215,14 @@ export class ConfigurationUI {
       Math.ceil(filteredData.length / this.pageSize),
       filteredData
     );
+
     finalData.forEach((item) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${item.name}</td>
-        <td>${item.par}</td>
-        <td>${item.opis}</td>
-        <td>${item.tip}</td>
+        <td>${item.name ?? ""}</td>
+        <td>${item.par ?? ""}</td>
+        <td>${item.opis ?? ""}</td>
+        <td>${item.tip ?? ""}</td>
       `;
       tbody.appendChild(tr);
     });

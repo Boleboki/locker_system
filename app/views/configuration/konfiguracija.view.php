@@ -55,6 +55,8 @@ require base_path("app/views/inc/header.php") ?>
 
     table.config-table tbody tr:hover {
         background-color: var(--table-row-hover-bg);
+        cursor: pointer;
+
     }
 
     /* Modal */
@@ -345,7 +347,7 @@ require base_path("app/views/inc/header.php") ?>
             </div>
         </div>
         <div class="modal-footer">
-            <button id="editBtn"><?= Lang::get('common.edit') ?></button>
+            <button id="editBtn"><?= Lang::get('common.save') ?></button>
         </div>
     </div>
 </div>

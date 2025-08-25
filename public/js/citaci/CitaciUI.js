@@ -358,7 +358,6 @@ export class CitaciUI {
       Math.ceil(filteredData.length / this.pageSize),
       filteredData
     );
-
     finalData.forEach((item) => {
       const row = document.createElement("tr");
       row.dataset.id = item.id_citaca;

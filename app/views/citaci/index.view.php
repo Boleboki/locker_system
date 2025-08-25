@@ -385,7 +385,7 @@ require base_path("app/views/inc/header.php") ?>
                                 <ul></ul>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.description") ?></label>
                             <input type="text" class="form-control" id="opis_citaca">
                             <div class="form-text text-danger error-message">
@@ -406,19 +406,20 @@ require base_path("app/views/inc/header.php") ?>
                                 <ul></ul>
                             </div>
                         </div>
-                        <div class="col-md-2 d-flex align-items-center">
-                            <div class="form-check mt-4">
-                                <input class="form-check-input" type="checkbox" id="brojevi_ormarica_po_indexu">
-                                <label class="form-check-label" for="brojevi_ormarica_po_indexu"><?= Lang::get("reader.form.labels.lockers_by_index") ?></label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label"><?= Lang::get("reader.form.labels.ip_address") ?></label>
                             <input type="text" class="form-control" id="ip_address">
                             <div class="form-text text-danger error-message">
                                 <ul></ul>
                             </div>
                         </div>
+                        <div class="col-md-2 d-flex align-items-center">
+                            <div class="form-check mt-1">
+                                <input class="form-check-input" type="checkbox" id="brojevi_ormarica_po_indexu">
+                                <label class="form-check-label" for="brojevi_ormarica_po_indexu"><?= Lang::get("reader.form.labels.lockers_by_index") ?></label>
+                            </div>
+                        </div>
+
 
                         <div class="col-12">
                             <label class="form-label"><?= Lang::get("reader.form.labels.lockers_ids") ?></label>
@@ -456,7 +457,7 @@ require base_path("app/views/inc/header.php") ?>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn" id="citacEditBtn"><?= Lang::get("common.edit") ?></button>
+                    <button class="btn" id="citacEditBtn"><?= Lang::get("common.save") ?></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= Lang::get("common.close") ?></button>
                 </div>
             </div>

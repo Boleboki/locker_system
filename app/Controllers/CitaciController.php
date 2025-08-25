@@ -183,6 +183,7 @@ class CitaciController
             Logger::info(Logger::translate("logs.citaci.create_success", ["citac" => json_encode($data)]));
             echo json_encode([
                 'success' => true,
+                'redirect' => url("citaci"),
                 'message' => Lang::get("responses.citaci.create_success"),
             ]);
         } catch (\Throwable $e) {
