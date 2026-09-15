@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 08, 2025 at 02:21 PM
+-- Generation Time: Sep 16, 2026 at 12:28 AM
 -- Server version: 10.4.28-MariaDB
--- PHP Version: 7.4.1
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -54,8 +53,7 @@ CREATE TABLE `citaci` (
 --
 
 INSERT INTO `citaci` (`id_citaca`, `opis_citaca`, `tip_citaca`, `citac_za_radno_vreme`, `citac_za_kontrolu_pristupa`, `citac_za_ormarice`, `citac_za_grupu_ormarica`, `citac_za_odjavu`, `delay`, `sn_citaca`, `sn_barijere`, `delay_senzora`, `broj_ormarica`, `broj_redova_ormarica`, `brojevi_ormarica`, `aktivan`, `brojevi_ormarica_po_indexu`, `ip_address`) VALUES
-(7, 'H', '', '', '', '1', '', '', 0, 107405, 'ON102001', 0, 12, 2, '167,168,169,170,171,172,173,174,175,176,177,178,152', 1, 0, ''),
-(6, 'k-1', 'U', '0', '0', '1', NULL, '0', 0, 112988, 'ON102001', 0, 16, 2, '207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222', 1, 0, NULL),
+(6, 'k-1', 'U', '', '', '1', '', '', 0, 112988, 'ON102001', 0, 16, 2, '207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222', 1, 0, ''),
 (21, 'e', 'U', '0', '0', '1', NULL, '0', 0, 107336, 'ON101329', 0, 28, 2, '97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124', 1, 0, NULL),
 (2, 'G', 'U', '0', '0', '1', NULL, '0', 0, 107343, '', 0, 26, 2, '141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166', 1, 0, NULL),
 (107404, 'j', '', '0', '0', '1', '0', '0', 0, 107404, 'ON101324', 0, 1, 1, '2', 1, 0, NULL),
@@ -79,7 +77,20 @@ INSERT INTO `citaci` (`id_citaca`, `opis_citaca`, `tip_citaca`, `citac_za_radno_
 (74373, '', 'I', '', '', '', '', '', 0, 74373, '', 0, 0, 0, '', 0, 0, ''),
 (62362, '', 'I', '', '', '', '', '', 0, 623623, '', 0, 0, 0, '', 0, 0, ''),
 (63262, '', 'I', '', '', '', '', '', 0, 623623, '', 0, 0, 0, '', 0, 0, ''),
-(374, '', 'I', '', '', '', '', '', 0, 734, '', 0, 0, 0, '', 0, 0, '');
+(374, '', 'I', '', '', '', '', '', 0, 734, '', 0, 0, 0, '', 0, 0, ''),
+(75357, '46436', 'I', '', '', '', '', '', 845, 785485, 'dfhfdhs', 853835, 0, 0, '', 0, 0, ''),
+(743, '', 'I', '', '', '', '', '', 0, 743743, '', 0, 0, 0, '', 0, 0, ''),
+(4845, '', 'I', '', '', '', '', '', 0, 8454, '', 0, 0, 0, '', 0, 0, ''),
+(843834, '', 'I', '', '', '', '', '', 0, 834843, '', 0, 0, 0, '', 0, 0, ''),
+(743473, '', 'I', '', '', '', '', '', 0, 734743, '', 0, 0, 0, '', 0, 0, ''),
+(734473, '', 'I', '', '', '', '', '', 0, 743743, '', 0, 0, 0, '', 0, 0, ''),
+(7437, '', 'I', '', '', '', '', '', 0, 743734, '', 0, 0, 0, '', 0, 0, ''),
+(754375, '', 'I', '', '', '', '', '', 0, 753375, '', 0, 0, 0, '', 0, 0, ''),
+(853, '', 'I', '', '', '', '', '', 0, 853, '', 0, 0, 0, '', 0, 0, ''),
+(845, '', 'I', '', '', '', '', '', 0, 854, '', 0, 0, 0, '', 0, 0, ''),
+(845854, '', 'I', '', '', '', '', '', 0, 85383, '', 0, 0, 0, '', 0, 0, ''),
+(574854, '', 'I', '', '', '', '', '', 0, 854845, '', 0, 0, 0, '', 0, 0, ''),
+(745745, '', 'I', '', '', '', '', '', 0, 754745, '', 0, 0, 0, '', 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -210,11 +221,13 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`member_id`, `aktivan`, `username`, `password`, `admin`) VALUES
-(1, 1, 'bole', '$2y$10$lpwiWLJqSW2ZWfGQZSH7le4aKtacHPAtAfagjFjjgymYb9s9/5la6', 1),
+(1, 1, 'bole', '$2y$10$BUmVuyMPUEClvo/hqo7ST.Qno209Uszzh3xO2qL2e9GnhzTVZ7o5u', 1),
 (2, 1, 'nikola', '$2y$10$nU7ffTCtzSDBLyjg10nj7u4hGvJrL6tNVHeLc736EyVFOIIazeIdu', 1),
 (3, 1, 'boki', '$2y$10$b5oUdQYbmMfHom0vjKU0VO2JRlym7NcqOC2Qru2zY/55a7fpJqI2G', 1),
-(31, 1, 'hdahda', '$2y$10$YiQqOdtDeq5LZN69fIzlAeUKmaNzEfvYk234VRuh0a2LFFS.zWKKG', 1),
-(32, 1, 'hdaadh', '$2y$10$LN/nf2rWbHi0rBDuDj4EP.EGi5voNkUBjofDnY9Rs08D8fCTYyNMe', 1);
+(31, 1, 'gsdghsd', '', 1),
+(32, 1, 'hdaadh', '$2y$10$LN/nf2rWbHi0rBDuDj4EP.EGi5voNkUBjofDnY9Rs08D8fCTYyNMe', 1),
+(41, 1, 'jfhfhjd', '$2y$10$La5bXHj/DD03f8UKFiP8cOCicOvQis.L4kuipHEgZpCD1QSXL21yO', 1),
+(45, 1, 'admin', '$2y$10$qFjJfxMM4nsPy75/5JXURenT1lbFM/PURB78nyNVXuR136HEC8RR6', 1);
 
 --
 -- Indexes for dumped tables
@@ -260,7 +273,7 @@ ALTER TABLE `configuration_translations`
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `member_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `member_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
